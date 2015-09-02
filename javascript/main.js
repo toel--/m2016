@@ -7,12 +7,29 @@ $(init);
 function init() {
 
   $(window).resize(doWindowResize);
+  populateMenu();
   populateWelcome();
   enableEditable();
 
 }
 
 /********** populate gui ***********/
+
+function populateMenu() {
+
+  var mnuRows = [
+    {"id":"mnuLogin","label":"Logga in","function":doMenuLogin},
+    {"id":"mnuRegister","label":"Registrera","function":doMenuRegister}
+  ]
+  for (var i = 0; i< mnuRows.length; i++){
+    var mnuRow = mnuRows[i];
+    var html="<li><a id='"+mnuRow["id"]+"' href='#"+mnuRow["id"]+"' title='"+mnuRow["label"]+"'>"+mnuRow["label"]+"</a></li>\n";
+    $("#menu").append(html);
+    $("#"+mnuRow["id"]).click(mnuRow["function"]);
+  }
+
+}
+
 function populateWelcome() {
 
   backend.getText("welcome", "sv", callback);
@@ -30,8 +47,20 @@ function enableEditable() {
   tinyMCE.init({
     mode : "none",
     auto_focus : false
-});
+  });
 
+}
+
+/********** action function ***********/
+
+function doMenuLogin() {
+  $("#nav-expand").prop('checked', false);
+  alert("doMenuLogin");
+}
+
+function doMenuRegister() {
+  $("#nav-expand").prop('checked', false);
+  alert("doMenuRegister");
 }
 
 function doEditClick() {
