@@ -5,6 +5,9 @@ QUnit.test( "getMap test", testGetMap);
 QUnit.test( "getMapList test", testGetMapList);
 
 QUnit.test( "getText test", testGetText);
+
+QUnit.test( "login failure test", testLoginFailure);
+QUnit.test( "login as admin test", testLoginAsAdmin);
 QUnit.test( "setText test", testSetText);
 
 function testGetList( assert ) {
@@ -74,17 +77,57 @@ function testGetText( assert ) {
     }
 }
 
+function testLoginFailure( assert ) {
+
+    console.log("testLoginFailure");
+
+    var done = assert.async();
+    backend.login("thisuserdoesnotexists", "norethispassword", callback);
+
+    function callback(success) {
+      assert.ok(!success);
+      done();
+    }
+
+}
+
+
+function testLoginAsAdmin( assert ) {
+
+    console.log("testLoginAsAdmin");
+
+    var done = assert.async();
+    backend.login("admin", "", callback);
+
+    function callback(success) {
+      assert.ok(success);
+      done();
+    }
+
+}
+
 function testSetText( assert ) {
 
     console.log("testSetText");
 
     var done = assert.async();
     var s = "This is a test";
-    backend.setText("test", "en", s)
-    backend.getText("test", "en", callback);
 
-    function callback(text) {
-      assert.equal(text, s);
-      done();
+    backend.login("admin", "", callbackLogin);
+
+    function callbackLogin(success) {
+
+      assert.ok(success);
+      if (success) {
+        backend.setText("test", "en", s)
+        backend.getText("test", "en", callback);
+
+        function callback(text) {
+          assert.equal(text, s);
+          done();
+        }
+      }
     }
+
+
 }

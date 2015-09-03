@@ -5,6 +5,8 @@ function MensaBackend() {
     var that = this;
     dbUsers = TAFFY( getJsonUsers() );
     dbText = TAFFY( getJsonText() );
+    var isLoggedIn = false;
+    var isAdmin = false;
 
     /**** public ****/
 
@@ -44,12 +46,36 @@ function MensaBackend() {
         setTimeout(callback(maplist), 200);
     };
 
+    // loggin
+    this.login = function(id, password, callback) {
+
+      var success = false;
+      user = dbUsers({id:id}).first();
+      if (user!==undefined) {
+        success = (user["password"]===password);
+      }
+      if (success) {
+        isLoggedIn = true;
+        isAdmin = user["admin"];
+      }
+
+      setTimeout(callback(success), 200);
+
+    }
+
+    // To allow changes
+    this.isAdmin = function(callback) {
+      setTimeout(callback(isAdmin), 200);
+    }
 
 
     // get a user
     this.getUser = function(id, callback) {
 
-      var user = dbUsers({id:id}).first();
+      var user;
+      if (isLoggedIn) {
+        user = dbUsers({id:id}).first();
+      }
       setTimeout(callback(user), 200);
 
     };
@@ -65,7 +91,9 @@ function MensaBackend() {
     // get a text
     this.setText = function(id, lang, text) {
 
-      dbText({id:id}).update(lang, text);
+      if (isAdmin) {
+        dbText({id:id}).update(lang, text);
+      }
 
     };
 
