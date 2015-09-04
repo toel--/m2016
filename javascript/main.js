@@ -61,7 +61,7 @@ function enableEditable(b) {
 
   isAdmin = b;
   if (isAdmin) {
-    $("#fieldset").append("<div what='main_content' class='btnEdit'>edit</div>");
+    $("#fieldset").append("<div what='main_content' class='button btnEdit'>edit</div>");
     $(".btnEdit").click(doEditClick);
 
     tinyMCE.init({
@@ -77,22 +77,13 @@ function doMenuLogin() {
   $("#nav-expand").prop('checked', false);
 
   var html = "<div id='login_box'> \
-<div id='login_box_content'> \
-    <form id='login_form' style='line-height: 22px;'> \
-        <h2>Logga in</h2> \
-        <input type='text' id='username' placeholder='Medlems nummer'/><br> \
-        <input type='password' id='password' placeholder='Lösenord'/><br> \
-        <input type='submit' value='login' style='float: right;' onClick='doLogin(); return false;'/> \
-        <input type='hidden' name='keepMeLoggedIn' value='1'> \
-    </form> \
-</div> \
+    <h2>Logga in</h2> \
+    <input type='text' id='username' placeholder='Medlems nummer'/><br> \
+    <input type='password' id='password' placeholder='Lösenord'/><br> \
+    <div id='btnLogin' class='button' style='float: right;' >Logga in</div> \
 </div>";
-    $("#login").html(html);
-    $("#login").fadeIn();
-    $("#login_form").submit(function () {
-        doLogin();
-        return false;
-    });
+    $("#main_content").attr("what", "login").html(html);
+    $("#btnLogin").click(doLogin);
 }
 
 function doMenuRegister() {
