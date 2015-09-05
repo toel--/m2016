@@ -18,8 +18,8 @@ function init() {
 function populateMenuGuest() {
 
   var mnuRows = [
-    {"id":"mnuLogin","label":"Logga in","function":doMenuLogin},
-    {"id":"mnuRegister","label":"Registrera","function":doMenuRegister}
+    {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
+    {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
   ];
   for (var i = 0; i< mnuRows.length; i++){
     var mnuRow = mnuRows[i];
@@ -33,9 +33,9 @@ function populateMenuGuest() {
 function populateMenuMember() {
 
   var mnuRows = [
-    {"id":"mnuWelcome","label":"Välkommen","function":doMenuWelcome},
-    {"id":"mnuMembers","label":"Årsträffen","function":doMenuMembers},
-    {"id":"mnuRegister","label":"Ändra registration","function":doMenuRegister}
+    {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
+    {"id":"mnuMembers","label":"Årsträffen","function":doShowMembersPage},
+    {"id":"mnuRegister","label":"Ändra registration","function":doShowRegisterPage}
   ];
   $("#menu").html("");
   for (var i = 0; i< mnuRows.length; i++){
@@ -73,7 +73,7 @@ function enableEditable(b) {
 
 /********** action function ***********/
 
-function doMenuLogin() {
+function doShowLoginPage() {
   $("#nav-expand").prop('checked', false);
 
   var html = "<div id='login_box'> \
@@ -81,24 +81,30 @@ function doMenuLogin() {
     <input type='text' id='username' placeholder='Medlems nummer'/><br> \
     <input type='password' id='password' placeholder='Lösenord'/><br> \
     <div id='btnLogin' class='button' style='float: right;' >Logga in</div> \
-</div>";
+</div> \
+<div id='lblMessage'></div>";
     $("#main_content").attr("what", "login").html(html);
     $("#btnLogin").click(doLogin);
 }
 
-function doMenuRegister() {
+function doShowRegisterPage() {
   $("#nav-expand").prop('checked', false);
   alert("doMenuRegister");
 }
 
-function doMenuWelcome() {
+function doShowWelcomePage() {
   $("#nav-expand").prop('checked', false);
   populateMainContent("welcome");
 }
 
-function doMenuMembers() {
+function doShowMembersPage() {
   $("#nav-expand").prop('checked', false);
   populateMainContent("members_welcome");
+}
+
+function doShowForgotPasswordPage() {
+  $("#nav-expand").prop('checked', false);
+  populateMainContent("notImplementedYet");
 }
 
 function doEditClick() {
@@ -140,8 +146,10 @@ function doLogin() {
             $("#login").fadeOut();
             backend.isAdmin(enableEditable);
         } else {
-            alert("Tyvärr!");
-            $("#login").fadeOut();
+            var message = "Tyvärr inte, klick <div id='btnForgotPassword' class='button' style='display: inline;'>här</div> om du har glömt ditt lösenord."
+            $("#lblMessage").html(message).hide().fadeIn(.2).fadeOut(.2).fadeIn();
+            $("#btnForgotPassword").click(doShowForgotPasswordPage);
+
         }
     }
 }
