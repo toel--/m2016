@@ -8,6 +8,9 @@ QUnit.test( "getText test", testGetText);
 
 QUnit.test( "login failure test", testLoginFailure);
 QUnit.test( "login as admin test", testLoginAsAdmin);
+
+QUnit.test( "createUser test", testCreateUser);
+
 QUnit.test( "setText test", testSetText);
 
 function testGetList( assert ) {
@@ -105,6 +108,53 @@ function testLoginAsAdmin( assert ) {
     }
 
 }
+
+function testCreateUser( assert ) {
+
+  console.log("testCreateUser");
+
+  backend.login("admin", "", callbackLogin);
+
+  function callbackLogin(success) {
+
+    var done1 = assert.async();
+    backend.createUser("admin", "", callback1);
+    function callback1(answer) {
+      assert.equal(answer.success, false);
+      done1();
+    }
+
+    var done2 = assert.async();
+    backend.createUser("test", "", callback2);
+    function callback2(answer) {
+      assert.equal(answer.success, false);
+      done2();
+    }
+
+    var done3 = assert.async();
+    backend.getUser("test", callback3);
+    function callback3(user) {
+
+      assert.equal(user, false);
+
+      backend.createUser("test", "123456789", callback4);
+      function callback4(answer) {
+        assert.equal(answer.success, true);
+
+        backend.getUser("test", callback5);
+        function callback5(user) {
+          assert.equal(user.id, "test");
+          done3();
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
 
 function testSetText( assert ) {
 

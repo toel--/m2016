@@ -1,4 +1,5 @@
 var backend = new MensaBackend;
+var registrator = new Registrator;
 var isAdmin = false;
 
 /* At startup */
@@ -8,8 +9,16 @@ $(init);
 function init() {
 
   $(window).resize(doWindowResize);
+  /* $(window).popstate(doHashChange); */
+
   populateMenuGuest();
-  populateMainContent("welcome");
+  switch (window.location.hash) {
+    case "#mnuRegister": doShowRegisterPage(); break;
+    default: populateMainContent("welcome");
+  }
+
+
+
 
 }
 
@@ -78,9 +87,9 @@ function doShowLoginPage() {
 
   var html = "<div id='login_box'> \
     <h2>Logga in</h2> \
-    <input type='text' id='username' placeholder='Medlems nummer'/><br> \
+    <input type='text' id='username' placeholder='Medlemsnummer'/><br> \
     <input type='password' id='password' placeholder='Lösenord'/><br> \
-    <div id='btnLogin' class='button' style='float: right;' >Logga in</div> \
+    <div id='btnLogin' class='button' style='float: right;' tabindex=0, autofocus=true>Logga in</div> \
 </div> \
 <div id='lblMessage'></div>";
     $("#main_content").attr("what", "login").html(html);
@@ -88,8 +97,16 @@ function doShowLoginPage() {
 }
 
 function doShowRegisterPage() {
+
   $("#nav-expand").prop('checked', false);
-  alert("doMenuRegister");
+  registrator.getHtml(callback);
+
+  function callback(html) {
+    $("#main_content").attr("what", "registration").html(html);
+    $("#btnPrevious").click(registrator.doPrevious);
+    $("#btnNext").click(registrator.doNext);
+  }
+
 }
 
 function doShowWelcomePage() {
@@ -145,6 +162,7 @@ function doLogin() {
             populateMainContent("members_welcome");
             $("#login").fadeOut();
             backend.isAdmin(enableEditable);
+            registrator.isLoggedIn(true);
         } else {
             var message = "Tyvärr inte, klick <div id='btnForgotPassword' class='button' style='display: inline;'>här</div> om du har glömt ditt lösenord."
             $("#lblMessage").html(message).hide().fadeIn(.2).fadeOut(.2).fadeIn();
@@ -154,7 +172,7 @@ function doLogin() {
     }
 }
 
-/********** action function ***********/
+/********** events listeners ***********/
 
 
 function doWindowResize() {
@@ -171,6 +189,10 @@ function doWindowResize() {
   }
   */
 
+}
+
+function doHashChange(){
+  alert( location.hash );
 }
 
 /********** layout function **********/

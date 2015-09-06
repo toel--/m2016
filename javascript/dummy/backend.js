@@ -74,11 +74,40 @@ function MensaBackend() {
 
       var user;
       if (isLoggedIn) {
-        user = dbUsers({id:id}).first();
+        user = dbUsers({"id":id}).first();
       }
       setTimeout(callback(user), 200);
 
     };
+
+    // create a user
+    this.createUser = function(id, password, callback) {
+
+      var answer = {"success":true, "message":""};
+      var user = dbUsers({"id":id}).first();
+
+      if (password.length<5) {
+        answer["success"]=false;
+        answer["message"]="Lösenordet är för kort!<br>Välj ett lösenord med minst 5 tecken.";
+      }
+
+      if (id.length!=7 || !isNumeric(id)) {
+        answer["success"]=false;
+        answer["message"]="Felaktig medlemsnummer";
+      }
+      if (user!==false) {
+        answer["success"]=false;
+        answer["message"]="Medlemsnumret är redan registrerad";
+      }
+
+      if (answer["success"]) {
+        dbUsers.insert({"id":id,"password":password,"email":"","admin":false});
+      }
+
+      setTimeout(callback(answer), 200);
+
+    };
+
 
     // get a text
     this.getText = function(id, lang, callback) {
@@ -96,5 +125,12 @@ function MensaBackend() {
       }
 
     };
+
+
+
+    /********** private **********/
+    function isNumeric(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
 
 }
