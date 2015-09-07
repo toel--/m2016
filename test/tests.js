@@ -104,6 +104,7 @@ function testLoginAsAdmin( assert ) {
 
     function callback(success) {
       assert.ok(success);
+      backend.logout();
       done();
     }
 
@@ -112,6 +113,15 @@ function testLoginAsAdmin( assert ) {
 function testCreateUser( assert ) {
 
   console.log("testCreateUser");
+
+  backend.logout();
+
+  var done = assert.async();
+  backend.getUser("admin", callbackNotLoggedIn);
+  function callbackNotLoggedIn(user) {
+    assert.equal(user, undefined);
+    done();
+  }
 
   backend.login("admin", "", callbackLogin);
 
@@ -132,18 +142,18 @@ function testCreateUser( assert ) {
     }
 
     var done3 = assert.async();
-    backend.getUser("test", callback3);
+    backend.getUser("1970001", callback3);
     function callback3(user) {
 
       assert.equal(user, false);
 
-      backend.createUser("test", "123456789", callback4);
+      backend.createUser("1970001", "123456789", callback4);
       function callback4(answer) {
         assert.equal(answer.success, true);
 
-        backend.getUser("test", callback5);
+        backend.getUser("1970001", callback5);
         function callback5(user) {
-          assert.equal(user.id, "test");
+          assert.equal(user.id, "1970001");
           done3();
         }
 

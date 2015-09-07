@@ -63,6 +63,14 @@ function MensaBackend() {
 
     }
 
+    // logout
+    this.logout = function() {
+
+      isLoggedIn = false;
+      isAdmin = false;
+
+    }
+
     // To allow changes
     this.isAdmin = function(callback) {
       setTimeout(callback(isAdmin), 200);
