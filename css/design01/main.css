@@ -12,7 +12,7 @@ body {
   background-image:         linear-gradient(to bottom, #202020, #ffffff);
   */
   /* background: silver url('../background.jsp') center top; */
-	background: white url('../images/background01.jpg') center top no-repeat;
+	background: white url('images/background01.jpg') center top no-repeat;
   font-family: arial;
 }
 
@@ -121,7 +121,7 @@ h1 {
 }
 
 .ui-autocomplete-loading {
-    background: white url("../images/ui-anim_basic_16x16.gif") right center no-repeat;
+    background: white url("../../images/ui-anim_basic_16x16.gif") right center no-repeat;
 }
 
 .version {

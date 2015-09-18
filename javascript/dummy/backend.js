@@ -5,8 +5,7 @@ function MensaBackend() {
     var that = this;
     dbUsers = TAFFY( getJsonUsers() );
     dbText = TAFFY( getJsonText() );
-    var isLoggedIn = false;
-    var isAdmin = false;
+    var loggedInUser = false;
 
     /**** public ****/
 
@@ -55,8 +54,7 @@ function MensaBackend() {
         success = (user["password"]===password);
       }
       if (success) {
-        isLoggedIn = true;
-        isAdmin = user["admin"];
+        loggedInUser = user;
       }
 
       setTimeout(callback(success), 200);
@@ -66,22 +64,21 @@ function MensaBackend() {
     // logout
     this.logout = function() {
 
-      isLoggedIn = false;
-      isAdmin = false;
+      loggedInUser = false;
 
     }
 
     // To allow changes
     this.isAdmin = function(callback) {
-      setTimeout(callback(isAdmin), 200);
+      setTimeout(callback(loggedInUser && loggedInUser.admin), 200);
     }
 
 
     // get a user
     this.getUser = function(id, callback) {
 
-      var user;
-      if (isLoggedIn) {
+      var user=false;
+      if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
         user = dbUsers({"id":id}).first();
       }
       setTimeout(callback(user), 200);
@@ -105,7 +102,7 @@ function MensaBackend() {
       }
       if (user!==false) {
         answer["success"]=false;
-        answer["message"]="Medlemsnumret är redan registrerad";
+        answer["message"]="Medlemsnumret är redan registrerad.<br>Välj 'Logga in' i menyn i stället.";
       }
 
       if (answer["success"]) {
@@ -116,6 +113,35 @@ function MensaBackend() {
 
     };
 
+    // set the user info
+    this.setUserInfo = function(id, gender, email, callback) {
+
+      var answer = {"success":true, "message":""};
+      var user = dbUsers({"id":id}).first();
+
+      if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
+
+        dbUsers({id:id}).update({"email":email,"gender":gender});
+
+      } else {
+          answer["success"]=false;
+          answer["message"]="nekat tillträde";
+      }
+      setTimeout(callback(answer), 200);
+
+    };
+
+    /**************************************************************************/
+
+    this.getHotelEvents = function(callback) {
+
+      var data = getJsonHotelEvents();
+      setTimeout(callback(data), 200);
+
+    }
+
+
+    /**************************************************************************/
 
     // get a text
     this.getText = function(id, lang, callback) {
@@ -128,7 +154,7 @@ function MensaBackend() {
     // get a text
     this.setText = function(id, lang, text) {
 
-      if (isAdmin) {
+      if (loggedInUser && loggedInUser.admin) {
         dbText({id:id}).update(lang, text);
       }
 

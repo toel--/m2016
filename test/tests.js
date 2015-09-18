@@ -9,7 +9,9 @@ QUnit.test( "getText test", testGetText);
 QUnit.test( "login failure test", testLoginFailure);
 QUnit.test( "login as admin test", testLoginAsAdmin);
 
+QUnit.test( "getUser test", testGetUser);
 QUnit.test( "createUser test", testCreateUser);
+QUnit.test( "setUserInfo test", testSetUserInfo);
 
 QUnit.test( "setText test", testSetText);
 
@@ -110,6 +112,62 @@ function testLoginAsAdmin( assert ) {
 
 }
 
+/********* Users **************************************************************/
+
+function testGetUser( assert ) {
+
+  console.log("testGetUser");
+
+  backend.logout();
+
+  var done = assert.async();
+  backend.getUser("admin", callbackNotLoggedIn);
+  function callbackNotLoggedIn(user) {
+    assert.equal(user, false);
+    done();
+  }
+
+  backend.login("user", "", callbackLoginUser);
+  function callbackLoginUser(success) {
+
+    // Users skall not be able to see other users
+    var done = assert.async();
+    backend.getUser("admin", callback1);
+    function callback1(user) {
+      assert.equal(user, false);
+      done();
+    }
+
+    // Users skall be able to see themselves
+    var done = assert.async();
+    backend.getUser("user", callback2);
+    function callback2(user) {
+      assert.equal(user.id, "user");
+      done();
+    }
+  }
+
+  backend.login("admin", "", callbackLoginAdmin);
+  function callbackLoginAdmin(success) {
+
+    // Admins are allowed to see all users
+    var done = assert.async();
+    backend.getUser("admin", callback1);
+    function callback1(user) {
+      assert.equal(user.id, "admin");
+      done();
+    }
+    var done = assert.async();
+    backend.getUser("user", callback2);
+    function callback2(user) {
+      assert.equal(user.id, "user");
+      done();
+    }
+
+  }
+
+}
+
 function testCreateUser( assert ) {
 
   console.log("testCreateUser");
@@ -119,7 +177,7 @@ function testCreateUser( assert ) {
   var done = assert.async();
   backend.getUser("admin", callbackNotLoggedIn);
   function callbackNotLoggedIn(user) {
-    assert.equal(user, undefined);
+    assert.equal(user, false);
     done();
   }
 
@@ -165,6 +223,52 @@ function testCreateUser( assert ) {
 
 }
 
+function testSetUserInfo( assert ) {
+
+  console.log("testSetUserInfo");
+
+  backend.logout();
+
+  var done = assert.async();
+  backend.setUserInfo("admin", 1, "admin@nowhere.se", callback);
+  function callback(answer) {
+    assert.equal(answer.success, false);
+    done();
+  }
+
+  backend.login("admin", "", callbackLoginAdmin);
+  function callbackLoginAdmin(success) {
+
+    var done1 = assert.async();
+    backend.getUser("admin", callback1);
+    function callback1(user) {
+      assert.equal(user.id, "admin");
+      assert.equal(user.email, "toel@toel.se");
+      done1();
+    }
+
+    var done2 = assert.async();
+    backend.setUserInfo("admin", 1, "admin@nowhere.se", callback2);
+    function callback2(answer) {
+      assert.equal(answer.success, true);
+      done2();
+    }
+
+    var done3 = assert.async();
+    backend.getUser("admin", callback3);
+    function callback3(user) {
+      assert.equal(user.id, "admin");
+      assert.equal(user.email, "admin@nowhere.se");
+      done3();
+    }
+
+
+  }
+
+}
+
+
+/************ TEXT ************************************************************/
 
 function testSetText( assert ) {
 

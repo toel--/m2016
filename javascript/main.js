@@ -18,8 +18,6 @@ function init() {
   }
 
 
-
-
 }
 
 /********** populate gui ***********/
@@ -30,12 +28,7 @@ function populateMenuGuest() {
     {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
     {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
   ];
-  for (var i = 0; i< mnuRows.length; i++){
-    var mnuRow = mnuRows[i];
-    var html="<li><a id='"+mnuRow["id"]+"' href='#"+mnuRow["id"]+"' title='"+mnuRow["label"]+"'>"+mnuRow["label"]+"</a></li>\n";
-    $("#menu").append(html);
-    $("#"+mnuRow["id"]).click(mnuRow["function"]);
-  }
+  populateMenu(mnuRows);
 
 }
 
@@ -46,13 +39,7 @@ function populateMenuMember() {
     {"id":"mnuMembers","label":"Årsträffen","function":doShowMembersPage},
     {"id":"mnuRegister","label":"Ändra registration","function":doShowRegisterPage}
   ];
-  $("#menu").html("");
-  for (var i = 0; i< mnuRows.length; i++){
-    var mnuRow = mnuRows[i];
-    var html="<li><a id='"+mnuRow["id"]+"' href='#"+mnuRow["id"]+"' title='"+mnuRow["label"]+"'>"+mnuRow["label"]+"</a></li>\n";
-    $("#menu").append(html);
-    $("#"+mnuRow["id"]).click(mnuRow["function"]);
-  }
+  populateMenu(mnuRows);
 
 }
 

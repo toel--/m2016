@@ -5,6 +5,7 @@ function Registrator() {
     var that = this;
     var step = 0;
     var stepsCount = 3;
+    var user = {"id":"","email":"","gender": "-1"};
 
     /**** public ****/
 
@@ -12,13 +13,12 @@ function Registrator() {
 
       var html;
       switch (step) {
-        case 0: html = getCreateAccountHtml(); break;
-        case 1: html = getHtml1(); break;
-        case 2: html = getHtml2(); break;
-        case 3: html = getHtml3(); break;
+        case 0: html = getCreateAccountHtml(callback); break;
+        case 1: html = getPopulateAccountHtml(callback); break;
+        case 2: html = getRegisterHotel(callback); break;
+        case 3: html = getHtml3(callback); break;
         default: html = "Oops!";
       }
-      setTimeout(callback(html), 200);
     };
 
     this.doPrevious = function() {
@@ -47,31 +47,65 @@ function Registrator() {
 
 
     /**** private ****/
-    function getCreateAccountHtml() {
+    function getCreateAccountHtml(callback) {
       var html = "<div class='registration_box' >" + getRegistrationHeader();
       html+="Ange ditt medlemsnummer och välj ett lösenord:<br> \
       <input type='text' id='username' placeholder='Medlemsnummer'/><br> \
       <input type='password' id='password' placeholder='Lösenord'/><br></div>";
       html += getBrowsingBar();
-      return html;
+      setTimeout(callback(html), 1);
     }
 
-    function getHtml1() {
+    function getPopulateAccountHtml(callback) {
+      var email="";
+      if (user) email=user.email;
+      var genders = {"-1":"", "0":"kvinna", "1":"man"};
       var html = "<div class='registration_box' >" + getRegistrationHeader();
-      html += "Registration page 1...<br>(Not implemented yet!)";
-      return html;
+      html+="Ange ditt email adress och kön:<br> \
+      <input type='email' id='email' placeholder='Email' value='"+email+"'/><br> \
+      <select id='gender'  placeholder='Kön'>";
+      for (var key in genders) {
+        var selected = "";
+        if (user.gender===key) selected="SELECTED";
+        html += "<option value='"+key+"' "+selected+">"+genders[key]+"</option>";
+      }
+      html += "</select><br></div>";
+      html += getBrowsingBar();
+      setTimeout(callback(html), 1);
     }
 
-    function getHtml2() {
-      var html="Registration page 2...";
-      html += getBrowsingBar();
-      return html;
+    function getRegisterHotel(callback) {
+      backend.getHotelEvents(getHotelEventsCallback);
+      function getHotelEventsCallback(data) {
+        var html = "<div class='registration_box'>" + getRegistrationHeader();
+
+        html+="<div class='hotel_reservation'>";
+        html+="SELECT PACKAGE<br>";
+        html+="SELECT ROOM SHARING<br>";
+
+        var lastDate = "";
+        for (var i = 0; i< data.length; i++){
+            var entry = data[i];
+            var date = entry.date;
+            if (date!==lastDate) {
+              html+="<div class='row'>"+date+"</div>";
+              lastDate=date;
+            }
+            html+="<div class='row'>"+entry.label+"</div>";
+        }
+
+        html+="TOTAL PRICE";
+
+        html += "</div></div>";
+        html += getBrowsingBar();
+        setTimeout(callback(html), 1);
+      }
     }
 
     function getHtml3() {
       var html="Registration page 3...";
       html += getBrowsingBar();
-      return html;
+      setTimeout(callback(html), 1);
     }
 
     function getRegistrationHeader() {
@@ -81,6 +115,9 @@ function Registrator() {
       var title;
       switch (step) {
         case 0: title = "Skapa ett konto"; break;
+        case 1: title = "Om dig"; break;
+        case 2: title = "Hotell"; break;
+        case 2: title = "Aktivitet"; break;
         default: title = "-----";
       }
       return html.replace("###title###", title);
@@ -98,21 +135,55 @@ function Registrator() {
       var ok = true;
       switch (step) {
         case 0:
-          var username = $("#username").val();
+          user.id = $("#username").val();
           var password = $("#password").val();
-          backend.createUser(username, password, createUserCallback);
+          backend.createUser(user.id, password, createUserCallback);
+          break;
+        case 1:
+          user.email = $("#email").val();
+          user.gender = $("#gender").val();
+          backend.setUserInfo(user.id, user.gender, user.email, answerCallback);
           break;
         default:
-
       }
 
       function createUserCallback(answer) {
+        if (answer.success) {
+          var password = $("#password").val();
+          backend.login(user.id, password, loginUserCallback);
+        } else {
+          $("#lblMessage").html(answer.message);
+        }
+
+        function loginUserCallback(success) {
+          if (success) {
+              populateMenuMember();
+              callback(true);
+          } else {
+              $("#lblMessage").html("Oops!");
+          }
+
+        }
+
+      }
+
+      function answerCallback(answer) {
         if (answer.success) {
           callback(true);
         } else {
           $("#lblMessage").html(answer.message);
         }
       }
+
+    }
+
+    function nopCallback() {
+      // Do nothing
+    }
+
+
+    function getUserCallback(user) {
+      this.user = user;
     }
 
 }

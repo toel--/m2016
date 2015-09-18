@@ -12,15 +12,15 @@ body {
   background-image:         linear-gradient(to bottom, #202020, #ffffff);
   */
   /* background: silver url('../background.jsp') center top; */
-	background: white url('../images/background01.jpg') center top no-repeat;
+	background: blue url('images/wave.png') bottom repeat-x;
   font-family: arial;
 }
 
 fieldset {
     font-size: 1em;
     color: #002D4C;
-    border:1px solid #0099FF;
-    background-color: #E5F4FF;
+    /** border:1px solid #0099FF;
+     background-color: #E5F4FF; *//
     padding: 20px;
     min-height: 371px;
     border-radius: 5px;
@@ -121,7 +121,7 @@ h1 {
 }
 
 .ui-autocomplete-loading {
-    background: white url("../images/ui-anim_basic_16x16.gif") right center no-repeat;
+    background: white url("../../images/ui-anim_basic_16x16.gif") right center no-repeat;
 }
 
 .version {
@@ -153,6 +153,14 @@ h1 {
 
 .btnEdit {
   float: right;
+}
+
+.btnBigSun {
+  background: url('images/sun.png') center center no-repeat;
+  padding: 100px;
+  text-align: center;
+  vertical-align: middle;
+  float: left;
 }
 
 .buttonBar {
