@@ -13,3 +13,23 @@ function populateMenu(mnuRows) {
   }
 
 }
+
+function doWindowResize() {
+  var w = $(this).width();
+  /*
+  var kitComponents = $('#kit_components');
+  if (kitComponents.length) {
+    var kcw = w-168;
+    $('#kit_components').width(kcw);
+    var titlew = (kcw - 150)/2;
+    if (titlew<100) titlew=100;
+    $('.kc_title').width(titlew);
+    $('.kc_subtitle').width(titlew);
+  }
+  */
+
+}
+
+function menuClose() {
+  $("#nav-expand").prop('checked', false);
+}

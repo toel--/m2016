@@ -140,6 +140,13 @@ function MensaBackend() {
 
     }
 
+    this.getHotelRooms = function(callback) {
+
+      var data = getJsonHotelRooms();
+      setTimeout(callback(data), 200);
+
+    }
+
 
     /**************************************************************************/
 

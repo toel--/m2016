@@ -6,9 +6,11 @@ function Registrator() {
     var step = 0;
     var stepsCount = 3;
     var user = {"id":"","email":"","gender": "-1"};
+    var reg = {"roomType":"","package":"1","shareRoom":""};
 
     /**** public ****/
 
+    /** get the html content for the actual step */
     this.getHtml = function(callback) {
 
       var html;
@@ -20,6 +22,13 @@ function Registrator() {
         default: html = "Oops!";
       }
     };
+
+    /** register event listenders for the html of the current step */
+    this.doRegisterEventListeners = function() {
+      switch (step) {
+        case 2: registerEventListenersRegisterHotel(); break;
+      }
+    }
 
     this.doPrevious = function() {
 
@@ -59,47 +68,63 @@ function Registrator() {
     function getPopulateAccountHtml(callback) {
       var email="";
       if (user) email=user.email;
-      var genders = {"-1":"", "0":"kvinna", "1":"man"};
+      var genders = {"0":"kvinna", "1":"man"};
       var html = "<div class='registration_box' >" + getRegistrationHeader();
       html+="Ange ditt email adress och kön:<br> \
-      <input type='email' id='email' placeholder='Email' value='"+email+"'/><br> \
-      <select id='gender'  placeholder='Kön'>";
-      for (var key in genders) {
-        var selected = "";
-        if (user.gender===key) selected="SELECTED";
-        html += "<option value='"+key+"' "+selected+">"+genders[key]+"</option>";
-      }
-      html += "</select><br></div>";
+      <input type='email' id='email' placeholder='Email' value='"+email+"'/><br>";
+      html += getHtmlSelect("gender", "", genders, user.gender, "Kön");
+      html+="<br></div>";
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
     }
 
     function getRegisterHotel(callback) {
-      backend.getHotelEvents(getHotelEventsCallback);
-      function getHotelEventsCallback(data) {
-        var html = "<div class='registration_box'>" + getRegistrationHeader();
 
-        html+="<div class='hotel_reservation'>";
-        html+="SELECT PACKAGE<br>";
-        html+="SELECT ROOM SHARING<br>";
+      var rooms = getHotelRooms();
+      var events = getHotelEvents();
+      var shareRoomValues = {
+        "0":"dela rum med vem som helst",
+        "1":"dela rum med en person av samma kön",
+        "2":"dela rum med medlem:",
+        "3":"jag vill ha eget rum"
+      };
 
-        var lastDate = "";
-        for (var i = 0; i< data.length; i++){
-            var entry = data[i];
-            var date = entry.date;
-            if (date!==lastDate) {
-              html+="<div class='row'>"+date+"</div>";
-              lastDate=date;
-            }
-            html+="<div class='row'>"+entry.label+"</div>";
-        }
+      var html = "<div class='registration_box'>" + getRegistrationHeader();
 
-        html+="TOTAL PRICE";
+      html+="<div class='hotel_reservation'>";
 
-        html += "</div></div>";
-        html += getBrowsingBar();
-        setTimeout(callback(html), 1);
+      // Type of room
+      var roomTypes = [];
+      for (var i = 0; i< rooms.length; i++){
+        roomTypes[i]=rooms[i].id+", "+rooms[i].Ps+" personer";
+      };
+      html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType, "Välj typ av rum");
+      html+="<div class='field'>"+getCheckBox('package', '', 'package', reg.package, 'Packet erbjudande')+"</div>";
+      html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom, "Hur vill du dela rum");
+
+      var lastDate = "";
+      for (var i = 0; i< events.length; i++){
+          var entry = events[i];
+          var date = entry.date;
+          if (date!==lastDate) {
+            html+="<div class='row'>"+date+"</div>";
+            lastDate=date;
+          }
+          html+="<div class='row'>"+entry.label+"</div>";
       }
+
+      html+="TOTAL PRICE";
+
+      html += "</div></div>";
+      html += getBrowsingBar();
+      setTimeout(callback(html), 1);
+
+    }
+
+    function registerEventListenersRegisterHotel() {
+
+
+
     }
 
     function getHtml3() {

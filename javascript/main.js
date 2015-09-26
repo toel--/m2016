@@ -17,6 +17,8 @@ function init() {
     default: populateMainContent("welcome");
   }
 
+  doWindowResize();
+
 
 }
 
@@ -48,7 +50,7 @@ function populateMainContent(what) {
   backend.getText(what, "sv", callback);
 
   function callback(text) {
-    $("#main_content").attr("what", what).html(text);
+    doShow(what, text);
   }
 
 }
@@ -69,8 +71,19 @@ function enableEditable(b) {
 
 /********** action function ***********/
 
+function doShow(what, html, callback) {
+
+  $("#main_content").fadeOut();
+  setTimeout(function() {
+    $("#main_content").attr("what", what).html(html).fadeIn();
+    if (callback!==undefined) callback();
+  }, 300);
+
+}
+
 function doShowLoginPage() {
-  $("#nav-expand").prop('checked', false);
+
+  menuClose();
 
   var html = "<div id='login_box'> \
     <h2>Logga in</h2> \
@@ -79,35 +92,42 @@ function doShowLoginPage() {
     <div id='btnLogin' class='button' style='float: right;' tabindex=0, autofocus=true>Logga in</div> \
 </div> \
 <div id='lblMessage'></div>";
-    $("#main_content").attr("what", "login").html(html);
+
+  doShow("login", html, callback);
+  function callback() {
     $("#btnLogin").click(doLogin);
+  }
+
 }
 
 function doShowRegisterPage() {
 
-  $("#nav-expand").prop('checked', false);
+  menuClose();
   registrator.getHtml(callback);
 
   function callback(html) {
-    $("#main_content").attr("what", "registration").html(html);
-    $("#btnPrevious").click(registrator.doPrevious);
-    $("#btnNext").click(registrator.doNext);
+    doShow("registration", html, callback2);
+    function callback2() {
+      $("#btnPrevious").click(registrator.doPrevious);
+      $("#btnNext").click(registrator.doNext);
+      registrator.doRegisterEventListeners();
+    }
   }
 
 }
 
 function doShowWelcomePage() {
-  $("#nav-expand").prop('checked', false);
+  menuClose();
   populateMainContent("welcome");
 }
 
 function doShowMembersPage() {
-  $("#nav-expand").prop('checked', false);
+  menuClose();
   populateMainContent("members_welcome");
 }
 
 function doShowForgotPasswordPage() {
-  $("#nav-expand").prop('checked', false);
+  menuClose();
   populateMainContent("notImplementedYet");
 }
 
@@ -162,21 +182,7 @@ function doLogin() {
 /********** events listeners ***********/
 
 
-function doWindowResize() {
-  var w = $(this).width();
-  /*
-  var kitComponents = $('#kit_components');
-  if (kitComponents.length) {
-    var kcw = w-168;
-    $('#kit_components').width(kcw);
-    var titlew = (kcw - 150)/2;
-    if (titlew<100) titlew=100;
-    $('.kc_title').width(titlew);
-    $('.kc_subtitle').width(titlew);
-  }
-  */
 
-}
 
 function doHashChange(){
   alert( location.hash );
