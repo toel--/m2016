@@ -1,90 +1,13 @@
 
-html {
-  height: 100%;
-}
-
 body {
-  height: 100%;
-  /*
-  background-color: #ffffff;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#202020), to(#ffffff));
-  background-image: -webkit-linear-gradient(top, #202020, #ffffff);
-  background-image:         linear-gradient(to bottom, #202020, #ffffff);
-  */
-  /* background: silver url('../background.jsp') center top; */
 	background: #00babd bottom no-repeat;
-  background-size: 100%;
-  font-family: arial;
+ 	background-size: 100%;
 }
 
 fieldset {
-    font-size: 1em;
-    color: #002D4C;
-    /** border:1px solid #0099FF;
-     background-color: #E5F4FF; *//
     padding: 20px;
     min-height: 371px;
     border-radius: 5px;
-}
-
-legend {
-    color: #0099FF;
-}
-
-label {
-    display: inline-block;
-    width: 150px;
-    text-align: right;
-}
-
-select {
-    width: 250px;
-}
-
-input {
-  margin: 3px 3px 3px 0;
-  padding: 3px;
-}
-
-select {
-  margin: 3px 3px 3px 0;
-  padding: 3px;
-}
-
-h1 {
-  display: block;
-  font-size: 2em;
-  -webkit-margin-before: 0.67em;
-  -webkit-margin-after: 0.67em;
-  -webkit-margin-start: 0px;
-  -webkit-margin-end: 0px;
-  font-weight: bold;
-}
-
-
-.title {
-    margin: 20px;
-    font-size: 2em;
-		/* color: #002D4C; */
-    color: #0099FF;
-}
-
-.center {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.middle {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* new shadow */
-.shadow {
-    box-shadow: 0 5px 25px #333;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=5,MakeShadow=true,ShadowOpacity=0.35)";
-    background-color: white;
 }
 
 .box {
@@ -93,37 +16,6 @@ h1 {
 	height: 70%;
   min-width: 600px;
   min-height: 400px;
-  text-align: center;
-  vertical-align: middle;
-  border-radius: 10px;
-  padding: 10px;
-  opacity: .9;
-}
-
-.form {
-    text-align: left;
-    margin: 10px;
-}
-
-.table {
-   display:table;
-}
-
-.table-row {
-   display:table-row;
-}
-
-.table-cell {
-   display:table-cell;
-}
-
-.line {
-    /* display: inline-block;*/
-    margin-bottom: 10px;
-}
-
-.ui-autocomplete-loading {
-    background: white url("../../images/ui-anim_basic_16x16.gif") right center no-repeat;
 }
 
 .version {
@@ -134,28 +26,6 @@ h1 {
   font-size: 10px;
 }
 
-.button {
-  cursor: pointer;
-  border: 1px solid #0099FF;
-  /* background-color: #E5F4FF; */
-  color: black;
-  text-align: center;
-  border-radius: 10px;
-  padding: 5px;
-  font-size: 11px;
-  transition-duration: .5s;
-}
-
-.button:hover {
-  background-color: #0099FF;
-  color: white;
-  transition-duration: 1s;
-}
-
-.btnEdit {
-  float: right;
-}
-
 .btnBigSun {
   background: url('images/sun2.png') center center no-repeat;
   background-size: 120px;
@@ -164,48 +34,6 @@ h1 {
   vertical-align: middle;
   display: inline-block;
   cursor: pointer;
-}
-
-.buttonBar {
-  /*
-  bottom: 38px;
-  position: absolute;
-  */
-  width: 90%;
-}
-.alternative {
-    padding: 5px;
-    color: black;
-    border: silver solid thin;
-    background-color: #FCFCFC;
-}
-
-.noalternative {
-    border: red solid thin;
-    background-color: lightpink;
-    padding: 5px;
-    color: black;
-}
-
-.registration_box {
-  width: 400px;
-  height:100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 5px;
-  text-align: center;
-}
-
-.hotel_reservation {
-  width: 100%;
-  height:100%;
-  overflow: auto;
-  text-align: initial;
-}
-
-.header {
-  color: #0099FF;
-  font-size: 24px;
 }
 
 #bkgplate {
@@ -250,38 +78,6 @@ h1 {
   opacity: .8;
   margin:0px auto;
   display:block
-}
-
-
-#login_box {
-
-    width: 175px;
-    height:125px;
-    margin-top: 100px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 5px;
-
-}
-
-#username {
-  width: 160px;
-}
-
-#password  {
-  width: 160px;
-}
-
-#gender  {
-  width: 205px;
-}
-
-#lblMessage {
-  width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  color: red;
-  text-align: center;
 }
 
 #bottom-content {

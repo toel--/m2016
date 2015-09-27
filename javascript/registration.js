@@ -3,7 +3,7 @@ function Registrator() {
 
     // constructor
     var that = this;
-    var step = 0;
+    var step = 2;
     var stepsCount = 3;
     var user = {"id":"","email":"","gender": "-1"};
     var reg = {"roomType":"","package":"1","shareRoom":""};
@@ -123,9 +123,17 @@ function Registrator() {
 
     function registerEventListenersRegisterHotel() {
 
-
-
+      $("input").change(doRegisterHotelEvent);
+      $("select").change(doRegisterHotelEvent);
     }
+
+    function doRegisterHotelEvent() {
+      var id = $(this).attr("id");
+      var value = $(this).find('option:selected').attr("value");
+      if (value===undefined) value=$(this).find('option:selected').text();
+      alert(id+": "+value);
+    }
+
 
     function getHtml3() {
       var html="Registration page 3...";
