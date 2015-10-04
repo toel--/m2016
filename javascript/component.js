@@ -21,8 +21,8 @@ function getHtmlSelect(id, cssClass, values, selected, placeholder) {
 
 }
 
-function getCheckBox(id, cssClass, value, selected, label) {
-  var html = "<input type='checkbox' id='"+id+"' class='"+cssClass+"' value='"+value+"'/> \
-<label for='"+id+"'>"+label+"</label>";
+function getCheckBox(id, cssClass, value, checked, label) {
+  var html = "<input type='checkbox' id='"+id+"' class='"+cssClass+"' value='"+value+"' "+(checked?"checked='checked'":"")+" /> \
+<label for='"+id+"' class='"+cssClass+"'>"+label+"</label>";
   return html;
 }

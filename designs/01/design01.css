@@ -51,16 +51,16 @@ HTML  CSS   Result Edit on *, *::after, *::before {
 }
 
 p {
-    margin-bottom: 24px; 
+    margin-bottom: 24px;
 }
 p:last-child {
-    margin-bottom: 0; 
+    margin-bottom: 0;
 }
 
 .content {
     margin: auto;
     max-width: 1000px;
-    padding: 20px; 
+    padding: 20px;
 }
 
 .invis {
@@ -69,7 +69,7 @@ p:last-child {
     position: absolute;
     top: -999px;
     visibility: hidden;
-    width: 1px; 
+    width: 1px;
 }
 
 .main-base {

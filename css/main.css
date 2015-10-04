@@ -50,6 +50,9 @@ h1 {
     font-weight: bold;
 }
 
+table {
+  width: 100%;
+}
 
 .title {
     margin: 20px;
@@ -81,7 +84,7 @@ h1 {
     vertical-align: middle;
     border-radius: 10px;
     padding: 10px;
-    opacity: .9;
+    /*opacity: .9;*/
 }
 
 .form {
@@ -184,6 +187,25 @@ h1 {
     font-size: 24px;
 }
 
+.chkSmall {
+  width: auto;
+  display: inline;
+}
+
+.icon_calendar {
+  background: url('../images/icon_calendar.png') no-repeat;
+  width: 25px;
+  height: 25px;
+  line-height: 31px;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 3px;
+}
+
+.price {
+  text-align: right;
+}
+
 #logo {
     left: 10px;
     position: absolute;
@@ -218,4 +240,12 @@ h1 {
     margin-right: auto;
     color: red;
     text-align: center;
+}
+
+#roomType {
+  width: 200px;
+}
+
+#shareRoom {
+  width: 200px;
 }

@@ -1,12 +1,16 @@
 /* http://javascript.crockford.com/private.html */
+
+/* check http://stackoverflow.com/questions/4941004/putting-images-with-options-in-a-dropdown-list */
+
 function Registrator() {
 
     // constructor
     var that = this;
-    var step = 2;
+    var step = 0;
     var stepsCount = 3;
     var user = {"id":"","email":"","gender": "-1"};
-    var reg = {"roomType":"","package":"1","shareRoom":""};
+    var reg = {"roomType":"","package":true,"shareRoom":"0"};
+    var lastReg = {"roomType":"","package":false,"shareRoom":""};
 
     /**** public ****/
 
@@ -83,8 +87,8 @@ function Registrator() {
       var rooms = getHotelRooms();
       var events = getHotelEvents();
       var shareRoomValues = {
-        "0":"dela rum med vem som helst",
-        "1":"dela rum med en person av samma kön",
+        "0":"dela rum",
+        "1":"dela rum med likande kön",
         "2":"dela rum med medlem:",
         "3":"jag vill ha eget rum"
       };
@@ -94,26 +98,38 @@ function Registrator() {
       html+="<div class='hotel_reservation'>";
 
       // Type of room
-      var roomTypes = [];
+      var roomTypes = {};
       for (var i = 0; i< rooms.length; i++){
-        roomTypes[i]=rooms[i].id+", "+rooms[i].Ps+" personer";
+        roomTypes[rooms[i].id]=rooms[i].id+", "+rooms[i].Ps+" personer";
       };
-      html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType, "Välj typ av rum");
-      html+="<div class='field'>"+getCheckBox('package', '', 'package', reg.package, 'Packet erbjudande')+"</div>";
-      html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom, "Hur vill du dela rum");
+      html+="<table><tr><td>";
+      html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType , "Välj typ av rum");
+      html+="</td><td>";
+      html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Packet erbjudande')+"</div>";
+      // html+=getCheckBox('package', '', 'package', reg.package, 'Packet erbjudande');
+      html+="<td></tr>";
+      html+="<tr><td colspan='2'><div id='room_image'></div></td></tr>";
+      html+="<tr><td>"
+      html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom); //, "Hur vill du dela rum");
+      html+="</td><td>";
+      html+="<!-- input medlemsnummer -->";
+      html+="</td></tr>";
+      html+="</table>";
 
       var lastDate = "";
+      html+="<table>";
       for (var i = 0; i< events.length; i++){
           var entry = events[i];
           var date = entry.date;
           if (date!==lastDate) {
-            html+="<div class='row'>"+date+"</div>";
+            html+="<tr><td style='width: 30px'><div class='icon_calendar'>"+date.substring(8, 10)+"</div></td><td colspan='4'><b>"+getNameOfDay(date)+"</b></td></tr>";
             lastDate=date;
           }
-          html+="<div class='row'>"+entry.label+"</div>";
+          html+="<tr><td>&nbsp;</td><td><img src='images/icon_"+entry.type+".png'></td><td>"+getCheckBox(entry.id, 'chkSmall', '', reg[entry.id], '')+"</td><td>"+entry.label+"</td><td><div class='price' id='price_"+entry.id+"'></div/td></tr>";
       }
 
-      html+="TOTAL PRICE";
+      html+="<tr><td colspan='4'>&nbsp;</td><td><div id='total' class='price'></div></td></tr>";
+      html+="</table>";
 
       html += "</div></div>";
       html += getBrowsingBar();
@@ -123,15 +139,116 @@ function Registrator() {
 
     function registerEventListenersRegisterHotel() {
 
-      $("input").change(doRegisterHotelEvent);
-      $("select").change(doRegisterHotelEvent);
+      $("input").change(onRegisterHotelEvent);
+      $("select").change(onRegisterHotelEvent);
+      doRegistrationUpdate();
+
     }
 
-    function doRegisterHotelEvent() {
+    function onRegisterHotelEvent() {
       var id = $(this).attr("id");
-      var value = $(this).find('option:selected').attr("value");
-      if (value===undefined) value=$(this).find('option:selected').text();
-      alert(id+": "+value);
+      var value;
+      if (id==="roomType" || id==="shareRoom") {
+        value = $(this).find('option:selected').attr("value");
+        if (value===undefined) value=$(this).find('option:selected').text();
+      } else {
+        value = $(this).prop('checked');
+      }
+      // alert(id+": "+value);
+      reg[id]=value;
+      doRegistrationUpdate();
+    }
+
+    function doRegistrationUpdate() {
+
+      var total = 0;
+      var notSharing = (reg.shareRoom==="3");
+      var disableAll = (reg.roomType==="" || reg.shareRoom==="");
+
+      // alert(JSON.stringify(reg, null, 4));
+
+      var inPackage = getHotelInPackage();
+
+      // get the room data
+      var rooms = getHotelRooms();
+      var room;
+      for (var i=0; i<rooms.length; i++) {
+        if (rooms[i].id===reg.roomType) {
+          room = rooms[i];
+          break;
+        }
+      }
+
+      //  reset checkboxes
+      var events = getHotelEvents();
+      for (var i=0; i<events.length; i++) {
+        var event = events[i];
+        if (disableAll) {
+          $("#"+event.id).attr("disabled", true);
+        } else {
+          var disabled = (reg.package && ($.inArray(event.id, inPackage)>=0));
+          if (disabled) {
+            $("#"+event.id).attr("disabled", true);
+          } else {
+            $("#"+event.id).removeAttr("disabled");
+          }
+          $("#"+id).prop('checked', reg[event.id]);
+        }
+      }
+
+      // var reg = {"roomType":"","package":true,"shareRoom":""};
+      // Select / deselect on change
+      if (lastReg.roomType!==reg.roomType) {
+        $("#room_image").html("<img src='images/opalen/"+reg.roomType+".jpg' width='400'>");
+        lastReg.roomType=reg.roomType
+      }
+
+      /* need to split this */
+
+      if (lastReg.package!==reg.package) {
+        for (var i=0; i<inPackage.length; i++){
+          var id=inPackage[i];
+          if (reg.package) {
+            $("#"+id).prop('checked', true).attr("disabled", true);
+          } else {
+            $("#"+id).prop('checked', false).removeAttr("disabled");
+          }
+        }
+        lastReg.package=reg.package;
+      }
+
+      if (room===undefined) return;
+
+      // Compute price
+      if (reg.package) {
+        total += room["PCK"];
+      }
+
+      // handle each event
+      for (var i=0; i<events.length; i++){
+
+        var event = events[i];
+        var id=event.id;
+        var price=0;
+
+        // set the price value info
+        if (id.substring(0,1)==="N") {
+          var ps = room["Ps"];
+          price = room["1N"+ps+"P"];
+          if (notSharing) price += room["1P+"];
+          $("#price_"+id).html(price+" kr");
+        }
+
+        var selected = $("#"+id).prop('checked') && !($("#"+id).prop('disabled') );
+        if (selected) {
+          if (!(reg.package && $.inArray(id, inPackage))) total += price;                        // if not part of package
+        }
+
+
+      }
+
+      $("#total").html("<b>"+total+" kr</b>");
+
     }
 
 
@@ -217,6 +334,20 @@ function Registrator() {
 
     function getUserCallback(user) {
       this.user = user;
+    }
+
+
+    function getNameOfDay(dateString) {
+      var d = new Date(dateString);
+      var weekday = new Array(7);
+      weekday[0]=  "Söndag";
+      weekday[1] = "Måndag";
+      weekday[2] = "Tisdag";
+      weekday[3] = "Onsdag";
+      weekday[4] = "Torsdag";
+      weekday[5] = "Fredag";
+      weekday[6] = "Lördag";
+      return weekday[d.getDay()];
     }
 
 }
