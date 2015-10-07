@@ -6,11 +6,11 @@ function Registrator() {
 
     // constructor
     var that = this;
-    var step = 0;
+    var step = 2;
     var stepsCount = 3;
     var user = {"id":"","email":"","gender": "-1"};
-    var reg = {"roomType":"","package":true,"shareRoom":"0"};
-    var lastReg = {"roomType":"","package":false,"shareRoom":""};
+    var reg = {"roomType":"","package":"","shareRoom":"0"};
+    var lastReg = {"roomType":"","package":"","shareRoom":""};
 
     /**** public ****/
 
@@ -86,6 +86,7 @@ function Registrator() {
 
       var rooms = getHotelRooms();
       var events = getHotelEvents();
+      var packages = getHotelPackages();
       var shareRoomValues = {
         "0":"dela rum",
         "1":"dela rum med likande kön",
@@ -95,26 +96,34 @@ function Registrator() {
 
       var html = "<div class='registration_box'>" + getRegistrationHeader();
 
-      html+="<div class='hotel_reservation'>";
+      html+="<div class='hotel_reservation'><div id='lblMessage'></div>";
 
       // Type of room
       var roomTypes = {};
       for (var i = 0; i< rooms.length; i++){
         roomTypes[rooms[i].id]=rooms[i].id+", "+rooms[i].Ps+" personer";
       };
-      html+="<table><tr><td>";
+      //html+="<table><tr><td>";
       html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType , "Välj typ av rum");
-      html+="</td><td>";
-      html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Packet erbjudande')+"</div>";
-      // html+=getCheckBox('package', '', 'package', reg.package, 'Packet erbjudande');
-      html+="<td></tr>";
-      html+="<tr><td colspan='2'><div id='room_image'></div></td></tr>";
-      html+="<tr><td>"
+      //html+="</td><td>";
+      //html+="<td></tr>";
+      //html+="<tr><td colspan='2'>";
+      html+="<div id='room_image'></div>";
+      //html+="</td></tr>";
+      //html+="<tr><td>"
       html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom); //, "Hur vill du dela rum");
-      html+="</td><td>";
+
+      //html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Packet erbjudande')+"</div>";
+      var selPackages = {};
+      for (var i = 0; i< packages.length; i++){
+        selPackages[packages[i].id]=packages[i].label;
+      }
+      html+=getHtmlSelect('package', '', selPackages, reg.package, "Välj packet erbjudande");
+
+      //html+="</td><td>";
       html+="<!-- input medlemsnummer -->";
-      html+="</td></tr>";
-      html+="</table>";
+      //html+="</td></tr>";
+      //html+="</table>";
 
       var lastDate = "";
       html+="<table>";
@@ -127,7 +136,7 @@ function Registrator() {
           }
           html+="<tr><td>&nbsp;</td><td><img src='images/icon_"+entry.type+".png'></td><td>"+getCheckBox(entry.id, 'chkSmall', '', reg[entry.id], '')+"</td><td>"+entry.label+"</td><td><div class='price' id='price_"+entry.id+"'></div/td></tr>";
       }
-
+      html+="<tr><td colspan='4'>&nbsp;</td><td><hr></tr>";
       html+="<tr><td colspan='4'>&nbsp;</td><td><div id='total' class='price'></div></td></tr>";
       html+="</table>";
 
@@ -148,7 +157,7 @@ function Registrator() {
     function onRegisterHotelEvent() {
       var id = $(this).attr("id");
       var value;
-      if (id==="roomType" || id==="shareRoom") {
+      if (id==="roomType" || id==="shareRoom" || id==="package") {
         value = $(this).find('option:selected').attr("value");
         if (value===undefined) value=$(this).find('option:selected').text();
       } else {
@@ -163,11 +172,18 @@ function Registrator() {
 
       var total = 0;
       var notSharing = (reg.shareRoom==="3");
-      var disableAll = (reg.roomType==="" || reg.shareRoom==="");
 
       // alert(JSON.stringify(reg, null, 4));
 
-      var inPackage = getHotelInPackage();
+      // determine selected package
+      var packages = getHotelPackages();
+      var package;
+      for (var i = 0; i< packages.length; i++){
+          if (packages[i].id===reg.package) {
+            package = packages[i];
+            break;
+          }
+      }
 
       // get the room data
       var rooms = getHotelRooms();
@@ -179,21 +195,25 @@ function Registrator() {
         }
       }
 
+      // Perform som checks
+      if (package!==undefined && package.id==="matologi" && room===undefined) {
+        showMessage("Välj typ av rum först!");
+        $("#roomType").focus();
+        return;
+      }
+
       //  reset checkboxes
       var events = getHotelEvents();
       for (var i=0; i<events.length; i++) {
         var event = events[i];
-        if (disableAll) {
+        var disabled = (reg.package && ($.inArray(event.id, package.events)>=0));
+        if (disabled) {
           $("#"+event.id).attr("disabled", true);
         } else {
-          var disabled = (reg.package && ($.inArray(event.id, inPackage)>=0));
-          if (disabled) {
-            $("#"+event.id).attr("disabled", true);
-          } else {
-            $("#"+event.id).removeAttr("disabled");
-          }
-          $("#"+id).prop('checked', reg[event.id]);
+          $("#"+event.id).removeAttr("disabled");
         }
+        $("#"+id).prop('checked', reg[event.id]);
+
       }
 
       // var reg = {"roomType":"","package":true,"shareRoom":""};
@@ -203,11 +223,10 @@ function Registrator() {
         lastReg.roomType=reg.roomType
       }
 
-      /* need to split this */
-
+      /* check the things in the package and disable the checkbox */
       if (lastReg.package!==reg.package) {
-        for (var i=0; i<inPackage.length; i++){
-          var id=inPackage[i];
+        for (var i=0; i<package.events.length; i++){
+          var id=package.events[i];
           if (reg.package) {
             $("#"+id).prop('checked', true).attr("disabled", true);
           } else {
@@ -217,11 +236,11 @@ function Registrator() {
         lastReg.package=reg.package;
       }
 
-      if (room===undefined) return;
-
       // Compute price
       if (reg.package) {
-        total += room["PCK"];
+        var price = package.price;
+        if (price===undefined) price=package["price_"+reg.roomType];
+        if (price!==undefined) total += price;
       }
 
       // handle each event
@@ -230,18 +249,33 @@ function Registrator() {
         var event = events[i];
         var id=event.id;
         var price=0;
+        var selected = $("#"+id).prop('checked') && !($("#"+id).prop('disabled') );
 
         // set the price value info
         if (id.substring(0,1)==="N") {
-          var ps = room["Ps"];
-          price = room["1N"+ps+"P"];
-          if (notSharing) price += room["1P+"];
+          if (room===undefined) {
+            if (selected) {
+              showInfo(id, "Välj typ av rum!");
+              $("#"+id).prop('checked', false);
+            }
+          } else {
+            var ps = room["Ps"];
+            price = room["1N"+ps+"P"];
+            if (notSharing) price += room["1P+"];
+            $("#price_"+id).html(price+" kr");
+          }
+        } else {
+          price = event.price;
           $("#price_"+id).html(price+" kr");
         }
 
-        var selected = $("#"+id).prop('checked') && !($("#"+id).prop('disabled') );
+
         if (selected) {
-          if (!(reg.package && $.inArray(id, inPackage))) total += price;                        // if not part of package
+          if (package) {
+            if (!($.inArray(id, package.events)>=0)) total += price;                        // if package selected and event not part of package
+          } else {
+            total += price;
+          }
         }
 
 
@@ -261,7 +295,7 @@ function Registrator() {
     function getRegistrationHeader() {
       var html = "<div class='header'>###title###</div>";
       if (step>0) html += "steg "+step+" av "+stepsCount;
-      html += "<br><br><br>";
+      html += "<br><br>";
       var title;
       switch (step) {
         case 0: title = "Skapa ett konto"; break;
@@ -348,6 +382,15 @@ function Registrator() {
       weekday[5] = "Fredag";
       weekday[6] = "Lördag";
       return weekday[d.getDay()];
+    }
+
+    function showMessage(msg) {
+      $("#lblMessage").html(msg).hide().fadeIn(.2).fadeOut(.2).fadeIn().delay(2000).fadeOut();
+    }
+
+    function showInfo(id, msg) {
+      $("#price_"+id).html("<div id='info_"+id+"' style='color: red;'>"+msg+"</div>");
+      $("#info_"+id).hide().fadeIn(.2).fadeOut(.2).fadeIn().delay(2000).fadeOut();
     }
 
 }
