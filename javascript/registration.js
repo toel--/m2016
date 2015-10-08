@@ -111,12 +111,12 @@ function Registrator() {
       html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom); //, "Hur vill du dela rum");
       html+=getInput('text', 'shareWith', '', '', 'medlemsnummer');
 
-      //html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Packet erbjudande')+"</div>";
+      //html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Paketerbjudande')+"</div>";
       var selPackages = {};
       for (var i = 0; i< packages.length; i++){
         selPackages[packages[i].id]=packages[i].label;
       }
-      html+=getHtmlSelect('package', '', selPackages, reg.package, "Välj packet erbjudande");
+      html+=getHtmlSelect('package', '', selPackages, reg.package, "Välj paketerbjudande");
       html+="</div><br>";
 
       var lastDate = "";
@@ -259,7 +259,7 @@ function Registrator() {
         var event = events[i];
         var id=event.id;
         var price=0;
-        var selected = $("#"+id).prop('checked') && !($("#"+id).prop('disabled') );
+        var selected = $("#"+id).prop('checked'); // && !($("#"+id).prop('disabled') );
 
         // set the price value info
         if (id.substring(0,1)==="N") {
@@ -283,6 +283,7 @@ function Registrator() {
         if (selected) {
           if (package) {
             if (!($.inArray(id, package.events)>=0)) total += price;                        // if package selected and event not part of package
+            if (notSharing) total += room["1P+"];
           } else {
             total += price;
           }
