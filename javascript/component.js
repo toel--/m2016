@@ -26,3 +26,7 @@ function getCheckBox(id, cssClass, value, checked, label) {
 <label for='"+id+"' class='"+cssClass+"'>"+label+"</label>";
   return html;
 }
+
+function getInput(type, id, cssClass, value, label) {
+  return "<input type='"+type+"' id='"+id+"' class='"+cssClass+"' placeholder='"+label+"' value='"+value+"'/>";
+}

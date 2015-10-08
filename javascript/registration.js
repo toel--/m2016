@@ -11,6 +11,7 @@ function Registrator() {
     var user = {"id":"","email":"","gender": "-1"};
     var reg = {"roomType":"","package":"","shareRoom":"0"};
     var lastReg = {"roomType":"","package":"","shareRoom":""};
+    var lastTotal = 0;
 
     /**** public ****/
 
@@ -88,8 +89,8 @@ function Registrator() {
       var events = getHotelEvents();
       var packages = getHotelPackages();
       var shareRoomValues = {
-        "0":"dela rum",
-        "1":"dela rum med likande kön",
+        "0":"dela rum med vem som helst",
+        "1":"dela rum med personer av samma kön",
         "2":"dela rum med medlem:",
         "3":"jag vill ha eget rum"
       };
@@ -103,15 +104,12 @@ function Registrator() {
       for (var i = 0; i< rooms.length; i++){
         roomTypes[rooms[i].id]=rooms[i].id+", "+rooms[i].Ps+" personer";
       };
-      //html+="<table><tr><td>";
+
+      html+="<div style='width: 399px'>";
       html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType , "Välj typ av rum");
-      //html+="</td><td>";
-      //html+="<td></tr>";
-      //html+="<tr><td colspan='2'>";
       html+="<div id='room_image'></div>";
-      //html+="</td></tr>";
-      //html+="<tr><td>"
       html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom); //, "Hur vill du dela rum");
+      html+=getInput('text', 'shareWith', '', '', 'medlemsnummer');
 
       //html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Packet erbjudande')+"</div>";
       var selPackages = {};
@@ -119,11 +117,7 @@ function Registrator() {
         selPackages[packages[i].id]=packages[i].label;
       }
       html+=getHtmlSelect('package', '', selPackages, reg.package, "Välj packet erbjudande");
-
-      //html+="</td><td>";
-      html+="<!-- input medlemsnummer -->";
-      //html+="</td></tr>";
-      //html+="</table>";
+      html+="</div><br>";
 
       var lastDate = "";
       html+="<table>";
@@ -156,12 +150,19 @@ function Registrator() {
 
     function onRegisterHotelEvent() {
       var id = $(this).attr("id");
+      var type = $(this).attr("type");
+      if (type===undefined) type = $(this).get(0).tagName.toLowerCase();
       var value;
-      if (id==="roomType" || id==="shareRoom" || id==="package") {
-        value = $(this).find('option:selected').attr("value");
-        if (value===undefined) value=$(this).find('option:selected').text();
-      } else {
-        value = $(this).prop('checked');
+      switch (type) {
+        case "select":
+          value = $(this).find('option:selected').attr("value");
+          if (value===undefined) value=$(this).find('option:selected').text();
+          break;
+        case "text":
+          value = $(this).val();
+          break;
+        case "checkbox":
+          value = $(this).prop('checked');
       }
       // alert(id+": "+value);
       reg[id]=value;
@@ -172,8 +173,17 @@ function Registrator() {
 
       var total = 0;
       var notSharing = (reg.shareRoom==="3");
+      var sharingWith = (reg.shareRoom==="2");
 
-      // alert(JSON.stringify(reg, null, 4));
+      if (sharingWith) {
+        $( "#shareRoom" ).animate({width:'55%'}, function() {$("#shareWith").fadeIn();});
+      } else {
+        $("#shareWith").fadeOut(function() {$("#shareRoom").animate({width:'100%'});});
+
+
+      }
+
+      //alert(JSON.stringify(reg, null, 4));
 
       // determine selected package
       var packages = getHotelPackages();
@@ -255,7 +265,7 @@ function Registrator() {
         if (id.substring(0,1)==="N") {
           if (room===undefined) {
             if (selected) {
-              showInfo(id, "Välj typ av rum!");
+              showInfo(id, "Välj typ av rum först!");
               $("#"+id).prop('checked', false);
             }
           } else {
@@ -283,6 +293,11 @@ function Registrator() {
 
       $("#total").html("<b>"+total+" kr</b>");
 
+      if (lastTotal!==total) {
+        alertify.log("Summa: "+total+" kr");
+        lastTotal=total;
+      }
+
     }
 
 
@@ -300,7 +315,7 @@ function Registrator() {
       switch (step) {
         case 0: title = "Skapa ett konto"; break;
         case 1: title = "Om dig"; break;
-        case 2: title = "Hotell"; break;
+        case 2: title = "hotellbokning"; break;
         case 2: title = "Aktivitet"; break;
         default: title = "-----";
       }
@@ -385,12 +400,14 @@ function Registrator() {
     }
 
     function showMessage(msg) {
-      $("#lblMessage").html(msg).hide().fadeIn(.2).fadeOut(.2).fadeIn().delay(2000).fadeOut();
+      alertify.error(msg);
+      //$("#lblMessage").html(msg).hide().fadeIn(.2).fadeOut(.2).fadeIn().delay(2000).fadeOut();
     }
 
     function showInfo(id, msg) {
-      $("#price_"+id).html("<div id='info_"+id+"' style='color: red;'>"+msg+"</div>");
-      $("#info_"+id).hide().fadeIn(.2).fadeOut(.2).fadeIn().delay(2000).fadeOut();
+      alertify.error(msg);
+      //$("#price_"+id).html("<div id='info_"+id+"' style='color: red;'>"+msg+"</div>");
+      //$("#info_"+id).hide().fadeIn(.2).fadeOut(.2).fadeIn().delay(2000).fadeOut();
     }
 
 }
