@@ -4,7 +4,7 @@ contains the javascript methods that are design specific
 
 function populateMenu(mnuRows) {
 
-  $("#menu").width(170*mnuRows.length);
+  //$("#menu").width(170*mnuRows.length);
   $("#menu").html("");
   for (var i = 0; i< mnuRows.length; i++){
     var mnuRow = mnuRows[i];
@@ -26,5 +26,5 @@ function doWindowResize() {
 }
 
 function menuClose() {
-  $("#menu").fadeOut();
+  // $("#menu").fadeOut();
 }

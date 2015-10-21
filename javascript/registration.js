@@ -6,12 +6,13 @@ function Registrator() {
 
     // constructor
     var that = this;
-    var step = 2;
+    var step = 0;
     var stepsCount = 3;
     var user = {"id":"","email":"","gender": "-1"};
     var reg = {"roomType":"","package":"","shareRoom":"0"};
     var lastReg = {"roomType":"","package":"","shareRoom":""};
     var lastTotal = 0;
+    
 
     /**** public ****/
 
@@ -56,11 +57,24 @@ function Registrator() {
     this.isLoggedIn = function(b) {
       if (b) {
         if (step===0) step = 1;
+        backend.getUser(getUserInformationCallback);
+        backend.getUserHotellReg(getUserHotellRegCallback);
       }
     }
 
 
-    /**** private ****/
+    /***************************************************************************
+     * private 
+     **************************************************************************/
+    
+    function getUserInformationCallback(data) {
+        user = data;
+    }
+    
+    function getUserHotellRegCallback(data) {
+        reg = data;
+    }
+    
     function getCreateAccountHtml(callback) {
       var html = "<div class='registration_box' >" + getRegistrationHeader();
       html+="Ange ditt medlemsnummer och välj ett lösenord:<br> \
@@ -212,17 +226,23 @@ function Registrator() {
         return;
       }
 
-      //  reset checkboxes
+      //  select the ones in package and sync the checkboxes
       var events = getHotelEvents();
       for (var i=0; i<events.length; i++) {
         var event = events[i];
-        var disabled = (reg.package && ($.inArray(event.id, package.events)>=0));
+        var inPackage = (package && ($.inArray(event.id, package.events)>=0));
+        if (inPackage) reg[event.id]=true;
+        var disabled = inPackage;
+        if (event.linked!==undefined) {
+          disabled=true;                            // linked events are allways disabled
+          reg[event.id]=reg[event.linked];
+        }
         if (disabled) {
           $("#"+event.id).attr("disabled", true);
         } else {
           $("#"+event.id).removeAttr("disabled");
         }
-        $("#"+id).prop('checked', reg[event.id]);
+        $("#"+event.id).prop('checked', reg[event.id]);
 
       }
 
@@ -231,19 +251,6 @@ function Registrator() {
       if (lastReg.roomType!==reg.roomType) {
         $("#room_image").html("<img src='images/opalen/"+reg.roomType+".jpg' width='400'>");
         lastReg.roomType=reg.roomType
-      }
-
-      /* check the things in the package and disable the checkbox */
-      if (lastReg.package!==reg.package) {
-        for (var i=0; i<package.events.length; i++){
-          var id=package.events[i];
-          if (reg.package) {
-            $("#"+id).prop('checked', true).attr("disabled", true);
-          } else {
-            $("#"+id).prop('checked', false).removeAttr("disabled");
-          }
-        }
-        lastReg.package=reg.package;
       }
 
       // Compute price
@@ -259,7 +266,7 @@ function Registrator() {
         var event = events[i];
         var id=event.id;
         var price=0;
-        var selected = $("#"+id).prop('checked'); // && !($("#"+id).prop('disabled') );
+        var selected = reg[id];
 
         // set the price value info
         if (id.substring(0,1)==="N") {
@@ -267,6 +274,13 @@ function Registrator() {
             if (selected) {
               showInfo(id, "Välj typ av rum först!");
               $("#"+id).prop('checked', false);
+              reg[id]=false;
+              for (var j=0; j<events.length; j++){
+                if (events[j].linked && events[j].linked===id) {
+                  $("#"+events[j].id).prop('checked', false);
+                  reg[events[j].id]=false;
+                }
+              }
             }
           } else {
             var ps = room["Ps"];
@@ -276,9 +290,9 @@ function Registrator() {
           }
         } else {
           price = event.price;
-          $("#price_"+id).html(price+" kr");
+          var s = (price>0) ? price+" kr" : "";
+          if (price>0) $("#price_"+id).html(s);
         }
-
 
         if (selected) {
           if (package) {
@@ -289,7 +303,6 @@ function Registrator() {
           }
         }
 
-
       }
 
       $("#total").html("<b>"+total+" kr</b>");
@@ -299,10 +312,36 @@ function Registrator() {
         lastTotal=total;
       }
 
+      // Check if package should be used
+      var n=0;
+      var shouldUsePackage;
+      for (var i=0; i<packages.length; i++){
+        var pck = packages[i];
+        var ok = true;
+        for (var j=0; j<pck.events.length; j++) {
+          var id = pck.events[j];
+          if (!reg[id]) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) {
+          if (pck.events.length>n) {
+            shouldUsePackage = pck;
+            n=pck.events.length;
+          }
+        }
+      }
+      if (shouldUsePackage) {
+        if (package.id!==shouldUsePackage.id) {
+          alertify.log("Paketerbjudande "+shouldUsePackage.label+" blir billigare!");
+        }
+      }
+
     }
 
 
-    function getHtml3() {
+    function getHtml3(callback) {
       var html="Registration page 3...";
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
@@ -317,7 +356,7 @@ function Registrator() {
         case 0: title = "Skapa ett konto"; break;
         case 1: title = "Om dig"; break;
         case 2: title = "hotellbokning"; break;
-        case 2: title = "Aktivitet"; break;
+        case 3: title = "Aktivitet"; break;
         default: title = "-----";
       }
       return html.replace("###title###", title);
@@ -332,8 +371,8 @@ function Registrator() {
     }
 
     function performStep(callback) {
-      var ok = true;
-      switch (step) {
+      
+        switch (step) {
         case 0:
           user.id = $("#username").val();
           var password = $("#password").val();
@@ -344,6 +383,9 @@ function Registrator() {
           user.gender = $("#gender").val();
           backend.setUserInfo(user.id, user.gender, user.email, answerCallback);
           break;
+        case 2:
+          backend.setUserHotellReg(reg, answerCallback);
+          break;
         default:
       }
 
@@ -353,12 +395,15 @@ function Registrator() {
           backend.login(user.id, password, loginUserCallback);
         } else {
           $("#lblMessage").html(answer.message);
+          alertify.error(answer.message);
         }
 
         function loginUserCallback(success) {
           if (success) {
+              backend.getUser(getUserInformationCallback);
+              backend.getUserHotellReg(getUserHotellRegCallback);
               populateMenuMember();
-              callback(true);
+              setTimeout(function(){callback(true);}, 200); 
           } else {
               $("#lblMessage").html("Oops!");
           }
@@ -372,6 +417,7 @@ function Registrator() {
           callback(true);
         } else {
           $("#lblMessage").html(answer.message);
+          alertify.error(answer.message);
         }
       }
 
@@ -379,11 +425,6 @@ function Registrator() {
 
     function nopCallback() {
       // Do nothing
-    }
-
-
-    function getUserCallback(user) {
-      this.user = user;
     }
 
 

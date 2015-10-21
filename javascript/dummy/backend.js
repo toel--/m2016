@@ -6,6 +6,7 @@ function MensaBackend() {
     dbUsers = TAFFY( getJsonUsers() );
     dbText = TAFFY( getJsonText() );
     var loggedInUser = false;
+    var reg = {"roomType":"","package":"","shareRoom":"0"};
 
     /**** public ****/
 
@@ -13,7 +14,7 @@ function MensaBackend() {
     this.getList = function(callback) {
 
         var list = ["item1", "item2", "item3"];
-        setTimeout(callback(list), 200);
+        setTimeout(function(){callback(list);}, 200);
 
     };
 
@@ -23,7 +24,7 @@ function MensaBackend() {
         map["id"]=1;
         map["label"]="Hej!";
 
-        setTimeout(callback(map), 200);
+        setTimeout(function(){callback(map);}, 200);
     };
 
 
@@ -42,7 +43,7 @@ function MensaBackend() {
 
         var maplist = [map1, map2, map3];
 
-        setTimeout(callback(maplist), 200);
+        setTimeout(function(){callback(maplist);}, 200);
     };
 
     // loggin
@@ -57,7 +58,7 @@ function MensaBackend() {
         loggedInUser = user;
       }
 
-      setTimeout(callback(success), 200);
+      setTimeout(function(){callback(success);}, 200);
 
     }
 
@@ -70,18 +71,19 @@ function MensaBackend() {
 
     // To allow changes
     this.isAdmin = function(callback) {
-      setTimeout(callback(loggedInUser && loggedInUser.admin), 200);
+      setTimeout(function(){callback(loggedInUser && loggedInUser.admin);}, 200);
     }
 
 
     // get a user
     this.getUser = function(id, callback) {
 
-      var user=false;
+      var user;
       if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
         user = dbUsers({"id":id}).first();
       }
-      setTimeout(callback(user), 200);
+      if (user===false) user=null;
+      setTimeout(function(){callback(user);}, 200);
 
     };
 
@@ -109,7 +111,7 @@ function MensaBackend() {
         dbUsers.insert({"id":id,"password":password,"email":"","admin":false});
       }
 
-      setTimeout(callback(answer), 200);
+      setTimeout(function(){callback(answer);}, 200);
 
     };
 
@@ -127,24 +129,24 @@ function MensaBackend() {
           answer["success"]=false;
           answer["message"]="nekat tillträde";
       }
-      setTimeout(callback(answer), 200);
+      setTimeout(function(){callback(answer);}, 200);
 
     };
 
     /**************************************************************************/
 
-    this.getHotelEvents = function(callback) {
-
-      var data = getJsonHotelEvents();
-      setTimeout(callback(data), 200);
-
+    this.getUserHotellReg = function(callback) {
+        
+        setTimeout(function(){callback(reg);}, 200);
+        
     }
-
-    this.getHotelRooms = function(callback) {
-
-      var data = getJsonHotelRooms();
-      setTimeout(callback(data), 200);
-
+    
+    this.setUserHotellReg = function(data, callback) {
+        
+        reg = data;
+        var answer = {"success":true, "message":""};
+        setTimeout(function(){callback(answer);}, 200);
+        
     }
 
 
@@ -154,7 +156,7 @@ function MensaBackend() {
     this.getText = function(id, lang, callback) {
 
       var text = dbText({id:id}).first()[lang];
-      setTimeout(callback(text), 200);
+      setTimeout(function(){callback(text);}, 200);
 
     };
 

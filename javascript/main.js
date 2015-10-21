@@ -1,4 +1,8 @@
-var backend = new MensaBackend;
+var backend = MensaBackend;
+if (!backend.getList) {
+    backend = new MensaBackend;
+}
+
 var registrator = new Registrator;
 var isAdmin = false;
 
@@ -18,6 +22,8 @@ function init() {
   }
 
   doWindowResize();
+  
+  backend.getUser(getUserInformationCallback);
 
 
 }
@@ -128,7 +134,7 @@ function doShowMembersPage() {
 
 function doShowForgotPasswordPage() {
   menuClose();
-  populateMainContent("notImplementedYet");
+  populateMainContent("forgotPasswordPage");
 }
 
 function doEditClick() {
@@ -161,22 +167,28 @@ function doLogin() {
 
     var username = $("#username").val();
     var password = $("#password").val();
-    backend.login(username, password, callback);
+    backend.login(username, password, loginCallback);
 
-    function callback(success) {
-        if (success) {
-            populateMenuMember();
-            populateMainContent("members_welcome");
-            $("#login").fadeOut();
-            backend.isAdmin(enableEditable);
-            registrator.isLoggedIn(true);
-        } else {
-            var message = "Tyvärr inte, klick <div id='btnForgotPassword' class='button' style='display: inline;'>här</div> om du har glömt ditt lösenord."
-            $("#lblMessage").html(message).hide().fadeIn(.2).fadeOut(.2).fadeIn();
-            $("#btnForgotPassword").click(doShowForgotPasswordPage);
+}
 
-        }
+function loginCallback(success) {
+    if (success) {
+        populateMenuMember();
+        populateMainContent("members_welcome");
+        $("#login").fadeOut();
+        backend.isAdmin(enableEditable);
+        registrator.isLoggedIn(true);
+    } else {
+        var message = "Tyvärr inte, klick <div id='btnForgotPassword' class='button' style='display: inline;'>här</div> om du har glömt ditt lösenord."
+        $("#lblMessage").html(message).hide().fadeIn(.2).fadeOut(.2).fadeIn();
+        $("#btnForgotPassword").click(doShowForgotPasswordPage);
+
     }
+}
+
+function getUserInformationCallback(data) {
+    // Resume ongoing session on page reload
+    if (data!==null) loginCallback(true);
 }
 
 /********** events listeners ***********/

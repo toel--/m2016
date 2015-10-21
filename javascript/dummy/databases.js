@@ -1,7 +1,7 @@
 function getJsonUsers() {
 return [
 {"id":"user","password":"","email":"toel@toel.se","gender": "-1", "admin":false},
-{"id":"admin","password":"","email":"toel@toel.se","gender": "-1", "admin":true}
+{"id":"madmin","password":"removeme!","email":"toel@toel.se","gender": "-1", "admin":true}
 ];
 };
 

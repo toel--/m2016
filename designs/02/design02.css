@@ -1,7 +1,8 @@
 
 body {
-	background: #00babd bottom no-repeat;
- 	background-size: 100%;
+	/* background: #00babd bottom no-repeat; */
+    background: url('images/background2.jpg') center top no-repeat;
+ 	background-size: 100% 100%;
 }
 
 fieldset {
@@ -12,8 +13,8 @@ fieldset {
 
 .box {
   position: relative;
-	width: 70%;
-	height: 70%;
+  width: 70%;
+  height: 80%;
   min-width: 600px;
   min-height: 400px;
 }
@@ -27,7 +28,7 @@ fieldset {
 }
 
 .btnBigSun {
-  background: url('images/sun2.png') center center no-repeat;
+  background: url('images/sol2.png') center center no-repeat;
   background-size: 120px;
   padding: 50px;
   text-align: center;
@@ -55,6 +56,7 @@ fieldset {
   top: 3%;
   right: 4%;
   background-image: url('images/sol2.png');
+  
   width: 178px;
   height: 161px;
 }
@@ -82,11 +84,13 @@ fieldset {
 
 #bottom-content {
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   width: 100%;
 }
 
 #menu {
   margin-left: auto;
   margin-right: auto;
+  width: 80%;
+  text-align: center;
 }

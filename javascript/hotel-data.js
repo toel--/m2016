@@ -18,20 +18,20 @@ OBS det går inte att avboka delar i paketet
 function getHotelEvents() {
 return [
   {"id":"S0504", "date":"2016-05-04", "type":"food", "label":"Middag", "price":295},
-  {"id":"N0504", "date":"2016-05-04", "type":"room", "label":"Natt onsdag-tordag"},
-  {"id":"B0505", "date":"2016-05-05", "type":"food", "label":"Frukost", "price":0},
+  {"id":"N0504", "date":"2016-05-04", "type":"room", "label":"Natt onsdag-torsdag"},
+  {"id":"B0505", "date":"2016-05-05", "type":"food", "label":"Frukost", "price":0, "linked":"N0504"},
   {"id":"L0505", "date":"2016-05-05", "type":"food", "label":"Lunch", "price":213},
   {"id":"S0505", "date":"2016-05-05", "type":"food", "label":"Middag", "price":295},
-  {"id":"N0505", "date":"2016-05-05", "type":"room", "label":"Natt tordag-fredag"},
-  {"id":"B0506", "date":"2016-05-06", "type":"food", "label":"Frukost", "price":0},
+  {"id":"N0505", "date":"2016-05-05", "type":"room", "label":"Natt torsdag-fredag"},
+  {"id":"B0506", "date":"2016-05-06", "type":"food", "label":"Frukost", "price":0, "linked":"N0505"},
   {"id":"L0506", "date":"2016-05-06", "type":"food", "label":"Lunch", "price":213},
   {"id":"S0506", "date":"2016-05-06", "type":"food", "label":"Middag", "price":295},
   {"id":"N0506", "date":"2016-05-06", "type":"room", "label":"Natt fredag-lördag"},
-  {"id":"B0507", "date":"2016-05-07", "type":"food", "label":"Frukost", "price":0},
+  {"id":"B0507", "date":"2016-05-07", "type":"food", "label":"Frukost", "price":0, "linked":"N0506"},
   {"id":"L0507", "date":"2016-05-07", "type":"food", "label":"Lunch", "price":213},
   {"id":"S0507", "date":"2016-05-07", "type":"food", "label":"Galamiddag", "price":475},
   {"id":"N0507", "date":"2016-05-07", "type":"room", "label":"Natt lördag-söndag"},
-  {"id":"B0508", "date":"2016-05-08", "type":"food", "label":"Frukost", "price":0},
+  {"id":"B0508", "date":"2016-05-08", "type":"food", "label":"Frukost", "price":0, "linked":"N0507"},
   {"id":"L0508", "date":"2016-05-08", "type":"food", "label":"Take away påse", "price":95}
 ];
 }

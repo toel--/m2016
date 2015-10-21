@@ -131,6 +131,7 @@ table {
     padding: 5px;
     font-size: 11px;
     transition-duration: .5s;
+    z-index: 9;
 }
 
 .button:hover {
@@ -229,7 +230,7 @@ table {
 }
 
 #gender  {
-    width: 205px;
+    width: 170px;
 }
 
 #lblMessage {
