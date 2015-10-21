@@ -13,6 +13,8 @@ $(init);
 function init() {
 
   $(window).resize(doWindowResize);
+  $(window).bind('beforeunload', doWindowBeforeUnload);
+  $(window).on("navigate", doWindowNavigate);
   /* $(window).popstate(doHashChange); */
 
   populateMenuGuest();
@@ -193,8 +195,21 @@ function getUserInformationCallback(data) {
 
 /********** events listeners ***********/
 
+function doWindowNavigate(event, data) {
+  var direction = data.state.direction;
+  if (direction === 'back') {
+      alert("back!");
+    event.stopPropagation();
+  }
+  if (direction === 'forward') {
+    // do something else
+  }
+}
 
-
+function doWindowBeforeUnload(event) {
+    //alert(JSON.stringify(event));
+    return "Vill du lämna sidan?";
+}
 
 function doHashChange(){
   alert( location.hash );

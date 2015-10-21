@@ -28,3 +28,11 @@ function doWindowResize() {
 function menuClose() {
   // $("#menu").fadeOut();
 }
+
+
+function changeBackground(color1, color2) {
+    
+    $("#bkgplate").animate({backgroundColor: "grey"}, 1000 );
+    $("body").animate({backgroundColor: "silver"}, 1000 );
+    
+}

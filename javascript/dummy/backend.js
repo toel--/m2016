@@ -73,19 +73,27 @@ function MensaBackend() {
     this.isAdmin = function(callback) {
       setTimeout(function(){callback(loggedInUser && loggedInUser.admin);}, 200);
     }
-
-
-    // get a user
+    
     this.getUser = function(id, callback) {
 
       var user;
-      if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
-        user = dbUsers({"id":id}).first();
+      
+      if (callback === undefined) {
+          callback = id;
+          if (loggedInUser) {
+            getUser(loggedInUser.id, callback);
+        } else {
+            setTimeout(function(){callback(null);}, 200);
+        }
+      } else {
+        if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
+            user = dbUsers({"id":id}).first();
+        }
+        if (user===false) user=null;
+        setTimeout(function(){callback(user);}, 200);
       }
-      if (user===false) user=null;
-      setTimeout(function(){callback(user);}, 200);
 
-    };
+    }
 
     // create a user
     this.createUser = function(id, password, callback) {
