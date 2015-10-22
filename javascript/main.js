@@ -24,6 +24,7 @@ function init() {
   }
 
   doWindowResize();
+  initDesign();
   
   backend.getUser(getUserInformationCallback);
 
@@ -92,6 +93,7 @@ function doShow(what, html, callback) {
 function doShowLoginPage() {
 
   menuClose();
+  changeBackground("grey");
 
   var html = "<div id='login_box'> \
     <h2>Logga in</h2> \
@@ -175,6 +177,7 @@ function doLogin() {
 
 function loginCallback(success) {
     if (success) {
+        changeBackground("default");
         populateMenuMember();
         populateMainContent("members_welcome");
         $("#login").fadeOut();

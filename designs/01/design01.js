@@ -33,3 +33,11 @@ function doWindowResize() {
 function menuClose() {
   $("#nav-expand").prop('checked', false);
 }
+
+function changeBackground(theme) {
+    
+}
+
+function initDesign() {
+    
+}

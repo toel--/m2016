@@ -2,6 +2,12 @@
 contains the javascript methods that are design specific
 */
 
+var themes = {
+    "default":["#00babd","#87d1d4"],
+    "grey":["silver","grey"]
+};
+var sunDegrees = 0;
+
 function populateMenu(mnuRows) {
 
   //$("#menu").width(170*mnuRows.length);
@@ -30,9 +36,24 @@ function menuClose() {
 }
 
 
-function changeBackground(color1, color2) {
+function initDesign() {
+    changeBackground("default");
+    $("#bottom-content").animate({bottom: "10px"}, 3000);
+    setTimeout(rotateSun, 100);
+}
+
+function changeBackground(theme) {
     
-    $("#bkgplate").animate({backgroundColor: "grey"}, 1000 );
-    $("body").animate({backgroundColor: "silver"}, 1000 );
-    
+    var colors = themes[theme];
+    if (colors) {
+        $("body").animate({backgroundColor: colors[0]}, 1000 );
+        $("#bkgplate").animate({backgroundColor: colors[1]}, 1000 );
+    }
+}
+
+function rotateSun() {
+    sunDegrees+=.1;
+    $("#sol1").css("transform", "rotate("+sunDegrees+"deg)");
+    $("#sol2").css("transform", "rotate("+(0-sunDegrees)+"deg)");
+    setTimeout(rotateSun, 100);
 }

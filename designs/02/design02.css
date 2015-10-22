@@ -1,6 +1,6 @@
 
 body {
-    background: #00babd bottom no-repeat;
+    background: white bottom no-repeat;
     // background: url('images/background2.jpg') center top no-repeat;
     // background-size: 100% 100%;
 }
@@ -37,11 +37,18 @@ fieldset {
   cursor: pointer;
 }
 
+/*
+.btnBigSun:hover {
+    box-shadow: 0 5px 25px #333;
+    transition-duration: .3s;
+}
+*/
+
 #bkgplate {
   position: absolute;
   top: 10%;
   left: 8%;
-  background: #87d1d4;
+  background: white;
   -ms-transform: skewX(-12deg) skewY(2deg) rotate(-7deg);
   -webkit-transform: skewX(-12deg) skewY(2deg) rotate(-7deg);
   transform: skewX(-12deg) skewY(2deg) rotate(-7deg);
@@ -51,7 +58,17 @@ fieldset {
   min-height: 500px;
 }
 
-#sol {
+#sol1 {
+  position: absolute;
+  top: 3%;
+  right: 4%;
+  background-image: url('images/sol2.png');
+  
+  width: 178px;
+  height: 161px;
+}
+
+#sol2 {
   position: absolute;
   top: 3%;
   right: 4%;
@@ -84,7 +101,7 @@ fieldset {
 
 #bottom-content {
   position: absolute;
-  bottom: 10px;
+  bottom: -300px;
   width: 100%;
 }
 
