@@ -144,6 +144,10 @@ table {
     transition-duration: 1s;
 }
 
+.button:selected {
+    background-color: #0099FF;
+}
+
 .btnEdit {
     float: right;
 }
@@ -261,4 +265,16 @@ table {
   width: 40%;
   display: none;
   float: right;
+}
+
+#wrapper {
+  overflow: hidden; /* clear the float */
+}
+#submenu {
+  width: 100px;
+  float: left;
+  margin-right: 20px;
+}
+#main_content {
+  overflow: hidden;
 }

@@ -29,8 +29,9 @@ fieldset {
 
 .btnBigSun {
   background: url('images/sol2.png') center center no-repeat;
-  background-size: 120px;
-  padding: 50px;
+  background-size: 100px;
+  padding: 37px;
+  font-size: 12px;
   text-align: center;
   vertical-align: middle;
   display: inline-block;

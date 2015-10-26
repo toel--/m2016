@@ -46,8 +46,13 @@ function changeBackground(theme) {
     
     var colors = themes[theme];
     if (colors) {
-        $("body").animate({backgroundColor: colors[0]}, 1000 );
-        $("#bkgplate").animate({backgroundColor: colors[1]}, 1000 );
+        $("body").animate({backgroundColor: colors[0]}, 1000);
+        $("#bkgplate").animate({backgroundColor: colors[1]}, 1000);
+        $(".button").animate({"border-color": colors[0]}, 500);
+        
+        $('head').append('<style>.button {border-color:'+colors[0]+'} .button:hover {background-color: '+colors[0]+';}</style>');
+        
+        
     }
 }
 

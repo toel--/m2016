@@ -20,7 +20,7 @@ function init() {
   populateMenuGuest();
   switch (window.location.hash) {
     case "#mnuRegister": doShowRegisterPage(); break;
-    default: populateMainContent("welcome");
+    default: doShowWelcomePage();
   }
 
   doWindowResize();
@@ -36,6 +36,7 @@ function init() {
 function populateMenuGuest() {
 
   var mnuRows = [
+    {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
     {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
     {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
   ];
@@ -51,6 +52,18 @@ function populateMenuMember() {
     {"id":"mnuRegister","label":"Ändra registration","function":doShowRegisterPage}
   ];
   populateMenu(mnuRows);
+
+}
+
+function populateSubMenuWelcome() {
+
+  var mnuRows = [
+    {"id":"mnuSub_0","label":"Välkommen","function":doShowWelcomePage},
+    {"id":"mnuSub_1","label":"Mensa Göteborg","function":function(){populateMainContent("mensa_gothenburg");}},
+    {"id":"mnuSub_2","label":"Göteborg","function":function(){populateMainContent("about_gothenburg");}},
+    {"id":"mnuSub_3","label":"Hotell","function":function(){populateMainContent("about_hotel");}},
+  ];
+  populateSubMenu(mnuRows);
 
 }
 
@@ -78,6 +91,30 @@ function enableEditable(b) {
   }
 }
 
+function populateSubMenu(mnuRows) {
+
+  $("#submenu").html("");
+  for (var i = 0; i< mnuRows.length; i++){
+    var mnuRow = mnuRows[i];
+    var html="<div id='"+mnuRow["id"]+"' class='button' title='"+mnuRow["label"]+"'>"+mnuRow["label"]+"</div><br>\n";
+    $("#submenu").append(html);
+    $("#"+mnuRow["id"]).click(mnuRow["function"]);
+  }
+
+}
+
+function hideSubMenu() {
+    
+    $("#submenu").fadeOut().animate({width: "0"}, 500);
+    
+}
+
+function showSubMenu() {
+    
+    $("#submenu").animate({width: "100px"}, 500).fadeIn();
+    
+}
+
 /********** action function ***********/
 
 function doShow(what, html, callback) {
@@ -93,6 +130,7 @@ function doShow(what, html, callback) {
 function doShowLoginPage() {
 
   menuClose();
+  hideSubMenu();
   changeBackground("grey");
 
   var html = "<div id='login_box'> \
@@ -128,6 +166,8 @@ function doShowRegisterPage() {
 
 function doShowWelcomePage() {
   menuClose();
+  showSubMenu();
+  populateSubMenuWelcome();
   populateMainContent("welcome");
 }
 
