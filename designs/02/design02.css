@@ -31,8 +31,8 @@ fieldset {
   background: url('images/sol2.png') center center no-repeat;
   background-size: 100px;
   padding: 37px;
-  font-size: 12px;
   text-align: center;
+  font-size: 12px;
   vertical-align: middle;
   display: inline-block;
   cursor: pointer;
@@ -80,7 +80,7 @@ fieldset {
 }
 
 #main_content {
-  text-align: center;
+  /* text-align: center; */
 }
 
 #logo {

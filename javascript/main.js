@@ -61,7 +61,8 @@ function populateSubMenuWelcome() {
     {"id":"mnuSub_0","label":"Välkommen","function":doShowWelcomePage},
     {"id":"mnuSub_1","label":"Mensa Göteborg","function":function(){populateMainContent("mensa_gothenburg");}},
     {"id":"mnuSub_2","label":"Göteborg","function":function(){populateMainContent("about_gothenburg");}},
-    {"id":"mnuSub_3","label":"Hotell","function":function(){populateMainContent("about_hotel");}},
+    {"id":"mnuSub_3","label":"Västtrafik","function":function(){populateMainContent("about_vasttrafik");}},
+    {"id":"mnuSub_4","label":"Hotell","function":function(){populateMainContent("about_hotel");}},
   ];
   populateSubMenu(mnuRows);
 
