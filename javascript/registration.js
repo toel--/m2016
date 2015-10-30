@@ -267,9 +267,10 @@ function Registrator() {
         var id=event.id;
         var price=0;
         var selected = reg[id];
+        var isRoom = (id.substring(0,1)==="N");
 
         // set the price value info
-        if (id.substring(0,1)==="N") {
+        if (isRoom) {
           if (room===undefined) {
             if (selected) {
               showInfo(id, "Välj typ av rum först!");
@@ -284,8 +285,11 @@ function Registrator() {
             }
           } else {
             var ps = room["Ps"];
-            price = room["1N"+ps+"P"];
-            if (notSharing) price += room["1P+"];
+            if (notSharing) {
+                price = room["1N1P"];
+            } else {
+                price =  Math.floor((room["1N"+ps+"P"]/ps)+.5);
+            }
             $("#price_"+id).html(price+" kr");
           }
         } else {
@@ -296,8 +300,11 @@ function Registrator() {
 
         if (selected) {
           if (package) {
-            if (!($.inArray(id, package.events)>=0)) total += price;                        // if package selected and event not part of package
-            if (notSharing) total += room["1P+"];
+            if (!($.inArray(id, package.events)>=0)) {                           // if package selected and event not part of package
+                total += price;
+            } else {
+                if (isRoom && notSharing) total += room["1P+"];                 // Add extra when not sharing room included in package
+            }
           } else {
             total += price;
           }
