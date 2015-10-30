@@ -38,6 +38,10 @@ fieldset {
   cursor: pointer;
 }
 
+.title {
+  text-align: right;
+}
+
 /*
 .btnBigSun:hover {
     box-shadow: 0 5px 25px #333;

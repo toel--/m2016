@@ -37,6 +37,9 @@ function populateMenuGuest() {
 
   var mnuRows = [
     {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
+    {"id":"mnuMensaGbg","label":"Mensa Göteborg","function":doShowMensaGbg},
+    {"id":"mnuGothenburg","label":"Göteborg","function":doShowAboutGbg},
+    {"id":"mnuHotel","label":"Hotell","function":doShowAboutHotel},
     {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
     {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
   ];
@@ -48,13 +51,16 @@ function populateMenuMember() {
 
   var mnuRows = [
     {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
+    {"id":"mnuMensaGbg","label":"Mensa Göteborg","function":doShowMensaGbg},
+    {"id":"mnuGothenburg","label":"Göteborg","function":doShowAboutGbg},
+    {"id":"mnuHotel","label":"Hotell","function":doShowAboutHotel},
     {"id":"mnuMembers","label":"Årsträffen","function":doShowMembersPage},
-    {"id":"mnuRegister","label":"Ändra registration","function":doShowRegisterPage}
+    {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
   ];
   populateMenu(mnuRows);
 
 }
-
+/*
 function populateSubMenuWelcome() {
 
   var mnuRows = [
@@ -66,7 +72,7 @@ function populateSubMenuWelcome() {
   ];
   populateSubMenu(mnuRows);
 
-}
+}*/
 
 function populateMainContent(what) {
 
@@ -94,13 +100,14 @@ function enableEditable(b) {
 
 function populateSubMenu(mnuRows) {
 
-  $("#submenu").html("");
+  $("#submenu").html("").hide();
   for (var i = 0; i< mnuRows.length; i++){
     var mnuRow = mnuRows[i];
-    var html="<div id='"+mnuRow["id"]+"' class='button' title='"+mnuRow["label"]+"'>"+mnuRow["label"]+"</div><br>\n";
+    var html="<div id='"+mnuRow.id+"' class='button' title='"+mnuRow.label+"'>"+mnuRow.label+"</div><br>\n";
     $("#submenu").append(html);
-    $("#"+mnuRow["id"]).click(mnuRow["function"]);
+    $('#'+mnuRow.id).click(mnuRow.function);
   }
+  $("#submenu").fadeIn(2000);
 
 }
 
@@ -131,8 +138,8 @@ function doShow(what, html, callback) {
 function doShowLoginPage() {
 
   menuClose();
-  hideSubMenu();
-  changeBackground("grey");
+  //hideSubMenu();
+  changeTheme("grey");
 
   var html = "<div id='login_box'> \
     <h2>Logga in</h2> \
@@ -167,9 +174,28 @@ function doShowRegisterPage() {
 
 function doShowWelcomePage() {
   menuClose();
-  showSubMenu();
-  populateSubMenuWelcome();
+  changeTheme("default");
+  // showSubMenu();
+  // populateSubMenuWelcome();
   populateMainContent("welcome");
+}
+
+function doShowMensaGbg() {
+  menuClose();
+  changeTheme("mensa");
+  populateMainContent("mensa_gothenburg");
+}
+
+function doShowAboutGbg() {
+  menuClose();
+  changeTheme("gbg");
+  populateMainContent("about_gothenburg");
+}
+
+function doShowAboutHotel() {
+  menuClose();
+  changeTheme("default");
+  populateMainContent("about_hotel");
 }
 
 function doShowMembersPage() {
@@ -218,7 +244,7 @@ function doLogin() {
 
 function loginCallback(success) {
     if (success) {
-        changeBackground("default");
+        changeTheme("default");
         populateMenuMember();
         populateMainContent("members_welcome");
         $("#login").fadeOut();

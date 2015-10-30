@@ -249,7 +249,7 @@ function Registrator() {
       // var reg = {"roomType":"","package":true,"shareRoom":""};
       // Select / deselect on change
       if (lastReg.roomType!==reg.roomType) {
-        $("#room_image").html("<img src='images/opalen/"+reg.roomType+".jpg' width='400'>");
+        $("#room_image").html("<div>"+room.description+"</div><img src='images/opalen/"+reg.roomType+".jpg' width='400'>");
         lastReg.roomType=reg.roomType
       }
 

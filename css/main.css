@@ -274,7 +274,9 @@ table {
   width: 100px;
   float: left;
   margin-right: 20px;
+  position: absolute;
 }
 #main_content {
   overflow: hidden;
+  margin-left: 150px;
 }
