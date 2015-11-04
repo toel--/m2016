@@ -6,7 +6,7 @@ function MensaBackend() {
     dbUsers = TAFFY( getJsonUsers() );
     dbText = TAFFY( getJsonText() );
     var loggedInUser = false;
-    var reg = {"roomType":"","package":"","shareRoom":"0"};
+    var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"0"};
 
     /**** public ****/
 
@@ -81,7 +81,7 @@ function MensaBackend() {
       if (callback === undefined) {
           callback = id;
           if (loggedInUser) {
-            getUser(loggedInUser.id, callback);
+            this.getUser(loggedInUser.id, callback);
         } else {
             setTimeout(function(){callback(null);}, 200);
         }
@@ -111,8 +111,12 @@ function MensaBackend() {
         answer["message"]="Felaktig medlemsnummer";
       }
       if (user!==false) {
-        answer["success"]=false;
-        answer["message"]="Medlemsnumret är redan registrerad.<br>Välj 'Logga in' i menyn i stället.";
+          if (user.password===password) {
+            setTimeout(function(){callback(answer);}, 200);
+          } else {
+            answer["success"]=false;
+            answer["message"]="Medlemsnumret är redan registrerad men med annat lösenord.";
+          }
       }
 
       if (answer["success"]) {

@@ -159,6 +159,7 @@ function doShowLoginPage() {
 function doShowRegisterPage() {
 
   menuClose();
+  changeTheme("grey");
   registrator.getHtml(callback);
 
   function callback(html) {

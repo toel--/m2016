@@ -280,3 +280,13 @@ table {
   overflow: hidden;
   margin-left: 150px;
 }
+
+#nbAdults {
+    width: 49%;
+    float: left;
+}
+
+#nbChildrens {
+    width: 49%;
+    float: right;
+}

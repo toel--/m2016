@@ -9,7 +9,7 @@ function Registrator() {
     var step = 0;
     var stepsCount = 3;
     var user = {"id":"","email":"","gender": "-1"};
-    var reg = {"roomType":"","package":"","shareRoom":"0"};
+    var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"0"};
     var lastReg = {"roomType":"","package":"","shareRoom":""};
     var lastTotal = 0;
     
@@ -103,52 +103,76 @@ function Registrator() {
       var events = getHotelEvents();
       var packages = getHotelPackages();
       var shareRoomValues = {
-        "0":"dela rum med vem som helst",
-        "1":"dela rum med personer av samma kön",
-        "2":"dela rum med medlem:",
-        "3":"jag vill ha eget rum"
+        "0":"Dela rum med vem som helst",
+        "1":"Dela rum med personer av samma kön",
+        "2":"Dela rum med medlem:",
+        "3":"Jag vill ha eget rum"
       };
 
       var html = "<div class='registration_box'>" + getRegistrationHeader();
 
       html+="<div class='hotel_reservation'><div id='lblMessage'></div>";
 
-      // Type of room
-      var roomTypes = {};
-      for (var i = 0; i< rooms.length; i++){
-        roomTypes[rooms[i].id]=rooms[i].id+", "+rooms[i].Ps+" personer";
+      // Number of person
+      var nbAdults = {
+        "1":"Bara jag",
+        "2":"Jag +1",
+        "3":"Jag +2",
+        "4":"Jag +3"
       };
+      var nbChildrens = {
+        "0":"",
+        "1":"+1",
+        "2":"+2"
+      };
+      
+      html+=getHtmlSelect('nbAdults', '', nbAdults, reg.nbAdults, "Välj antal personner");
+      html+=getHtmlSelect('nbChildrens', '', nbChildrens, reg.nbChildrens, "Barn mellan 5 och 12");
 
-      html+="<div style='width: 399px'>";
-      html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType , "Välj typ av rum");
-      html+="<div id='room_image'></div>";
-      html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom); //, "Hur vill du dela rum");
-      html+=getInput('text', 'shareWith', '', '', 'medlemsnummer');
+      //var nbPersons = parseInt(reg.nbAdults)+parseInt(reg.nbChildrens);
+      
+      //if (nbPersons>0) {
 
-      //html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Paketerbjudande')+"</div>";
-      var selPackages = {};
-      for (var i = 0; i< packages.length; i++){
-        selPackages[packages[i].id]=packages[i].label;
-      }
-      html+=getHtmlSelect('package', '', selPackages, reg.package, "Välj paketerbjudande");
-      html+="</div><br>";
+        // Type of room
+        var roomTypes = {};
+        for (var i = 0; i< rooms.length; i++){
+          roomTypes[rooms[i].id]=rooms[i].id+", "+rooms[i].Ps+" personer";
+        };
 
-      var lastDate = "";
-      html+="<table>";
-      for (var i = 0; i< events.length; i++){
-          var entry = events[i];
-          var date = entry.date;
-          if (date!==lastDate) {
-            html+="<tr><td style='width: 30px'><div class='icon_calendar'>"+date.substring(8, 10)+"</div></td><td colspan='4'><b>"+getNameOfDay(date)+"</b></td></tr>";
-            lastDate=date;
-          }
-          html+="<tr><td>&nbsp;</td><td><img src='images/icon_"+entry.type+".png'></td><td>"+getCheckBox(entry.id, 'chkSmall', '', reg[entry.id], '')+"</td><td>"+entry.label+"</td><td><div class='price' id='price_"+entry.id+"'></div/td></tr>";
-      }
-      html+="<tr><td colspan='4'>&nbsp;</td><td><hr></tr>";
-      html+="<tr><td colspan='4'>&nbsp;</td><td><div id='total' class='price'></div></td></tr>";
-      html+="</table>";
+        html+="<div style='width: 399px'>";
+        html+=getHtmlSelect('roomType', '', roomTypes, reg.roomType , "Välj typ av rum");
+        html+="<div id='room_image'></div>";
+        html+=getHtmlSelect('shareRoom', '', shareRoomValues, reg.shareRoom); //, "Hur vill du dela rum");
+        html+=getInput('text', 'shareWith', '', '', 'medlemsnummer');
 
-      html += "</div></div>";
+        //html+="<div class='field' style='width: auto;'>"+getCheckBox('package', 'chkSmall', 'package', reg.package, 'Paketerbjudande')+"</div>";
+        var selPackages = {};
+        for (var i = 0; i< packages.length; i++){
+          selPackages[packages[i].id]=packages[i].label;
+        }
+        html+=getHtmlSelect('package', '', selPackages, reg.package, "Välj paketerbjudande");
+        html+="</div><br>";
+
+        var lastDate = "";
+        html+="<table>";
+        for (var i = 0; i< events.length; i++){
+            var entry = events[i];
+            var date = entry.date;
+            if (date!==lastDate) {
+              html+="<tr><td style='width: 30px'><div class='icon_calendar'>"+date.substring(8, 10)+"</div></td><td colspan='4'><b>"+getNameOfDay(date)+"</b></td></tr>";
+              lastDate=date;
+            }
+            html+="<tr><td>&nbsp;</td><td><img src='images/icon_"+entry.type+".png'></td><td>"+getCheckBox(entry.id, 'chkSmall', '', reg[entry.id], '')+"</td><td>"+entry.label+"</td><td><div class='price' id='price_"+entry.id+"'></div/td></tr>";
+        }
+        html+="<tr><td colspan='4'>&nbsp;</td><td><hr></tr>";
+        html+="<tr><td colspan='4'>&nbsp;</td><td><div id='total' class='price'></div></td></tr>";
+        html+="</table>";
+
+        html += "</div></div>";
+      //} else {
+      //    html += "<br><br><br><br>";
+      //}
+      
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
 
@@ -188,13 +212,13 @@ function Registrator() {
       var total = 0;
       var notSharing = (reg.shareRoom==="3");
       var sharingWith = (reg.shareRoom==="2");
+      var nbAdults = parseInt(reg.nbAdults);
+      var nbChildrens = parseInt(reg.nbChildrens);
 
       if (sharingWith) {
         $( "#shareRoom" ).animate({width:'55%'}, function() {$("#shareWith").fadeIn();});
       } else {
         $("#shareWith").fadeOut(function() {$("#shareRoom").animate({width:'100%'});});
-
-
       }
 
       //alert(JSON.stringify(reg, null, 4));
@@ -257,7 +281,11 @@ function Registrator() {
       if (reg.package) {
         var price = package.price;
         if (price===undefined) price=package["price_"+reg.roomType];
-        if (price!==undefined) total += price;
+        if (price!==undefined) {
+            price = (nbAdults*price)+(nbChildrens*(price/2));
+            price = Math.floor(price+.5);
+            total += price;
+        }
       }
 
       // handle each event
@@ -288,16 +316,18 @@ function Registrator() {
             if (notSharing) {
                 price = room["1N1P"];
             } else {
-                price =  Math.floor((room["1N"+ps+"P"]/ps)+.5);
+                price = Math.floor((room["1N"+ps+"P"]/ps)+.5);
             }
-            $("#price_"+id).html(price+" kr");
           }
         } else {
           price = event.price;
-          var s = (price>0) ? price+" kr" : "";
-          if (price>0) $("#price_"+id).html(s);
         }
 
+        price = (nbAdults*price)+(nbChildrens*(price/2));
+        price = Math.floor(price+.5);
+        var s = (price>0) ? price+" kr" : "";
+        $("#price_"+id).html(s);
+        
         if (selected) {
           if (package) {
             if (!($.inArray(id, package.events)>=0)) {                           // if package selected and event not part of package
