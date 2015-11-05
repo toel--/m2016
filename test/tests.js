@@ -268,7 +268,7 @@ function testSetUserInfo( assert ) {
   function testSetUserInfo_A(assert) {  
 
     var done = assert.async();
-    backend.setUserInfo("madmin", 1, "toel@toel.se", callback);
+    backend.setUserInfo("madmin", 1, "toel@toel.se", "0712345678", callback);
     function callback(answer) {
       assert.equal(answer.success, false);
       done();
@@ -293,7 +293,7 @@ function testSetUserInfo( assert ) {
 
   function testSetUserInfo_C(assert) { 
     var done2 = assert.async();
-    backend.setUserInfo("madmin", 1, "toel@toel.se", callback2);
+    backend.setUserInfo("madmin", 1, "toel@toel.se", "0712345678", callback2);
     function callback2(answer) {
       assert.equal(answer.success, true);
       done2();

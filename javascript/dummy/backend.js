@@ -6,7 +6,7 @@ function MensaBackend() {
     dbUsers = TAFFY( getJsonUsers() );
     dbText = TAFFY( getJsonText() );
     var loggedInUser = false;
-    var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"0"};
+    var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"-"};
 
     /**** public ****/
 
@@ -52,7 +52,7 @@ function MensaBackend() {
       var success = false;
       user = dbUsers({id:id}).first();
       if (user!==undefined) {
-        success = (user["password"]===password);
+        success = (user.password===password);
       }
       if (success) {
         loggedInUser = user;
@@ -89,7 +89,7 @@ function MensaBackend() {
         if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
             user = dbUsers({"id":id}).first();
         }
-        if (user===false) user=null;
+        if (!user) user=null;
         setTimeout(function(){callback(user);}, 200);
       }
 
@@ -120,7 +120,7 @@ function MensaBackend() {
       }
 
       if (answer["success"]) {
-        dbUsers.insert({"id":id,"password":password,"email":"","admin":false});
+        dbUsers.insert({"id":id,"password":password,"email":"","phone":"","admin":false});
       }
 
       setTimeout(function(){callback(answer);}, 200);
@@ -128,14 +128,14 @@ function MensaBackend() {
     };
 
     // set the user info
-    this.setUserInfo = function(id, gender, email, callback) {
+    this.setUserInfo = function(id, gender, email, phone, callback) {
 
       var answer = {"success":true, "message":""};
       var user = dbUsers({"id":id}).first();
 
       if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
 
-        dbUsers({id:id}).update({"email":email,"gender":gender});
+        dbUsers({id:id}).update({"email":email,"gender":gender,"phone":phone});
 
       } else {
           answer["success"]=false;

@@ -8,7 +8,7 @@ function Registrator() {
     var that = this;
     var step = 0;
     var stepsCount = 3;
-    var user = {"id":"","email":"","gender": "-1"};
+    var user = {"id":"","email":"","phone":"","gender": "-1"};
     var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"0"};
     var lastReg = {"roomType":"","package":"","shareRoom":""};
     var lastTotal = 0;
@@ -79,18 +79,30 @@ function Registrator() {
       var html = "<div class='registration_box' >" + getRegistrationHeader();
       html+="Ange ditt medlemsnummer och välj ett lösenord:<br> \
       <input type='text' id='username' placeholder='Medlemsnummer'/><br> \
-      <input type='password' id='password' placeholder='Lösenord'/><br></div>";
+      <input type='password' id='password' placeholder='Lösenord'/><br><br> \
+      <div class='info'>Medlemsnumret skall skrivas in enligt <br>det nya format år+3siffror (yyyyxxx)</div> \
+</div>";
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
     }
 
     function getPopulateAccountHtml(callback) {
-      var email="";
-      if (user) email=user.email;
+      var email="", phone="";
+      if (user) {
+          email=user.email;
+          phone=user.phone;
+      }
       var genders = {"0":"kvinna", "1":"man"};
       var html = "<div class='registration_box' >" + getRegistrationHeader();
-      html+="Ange ditt email adress och kön:<br> \
-      <input type='email' id='email' placeholder='Email' value='"+email+"'/><br>";
+      html+="<b>Frivilig information</b><br><br>";
+      
+      html+="<div class='info'>Ange ditt email adress om du vill kunna ta emot information om årsmöten via mail</div> \
+      <input type='email' id='email' placeholder='Email' value='"+email+"'/><br><br>";
+        
+      html+="<div class='info'>Ange ditt telefon nummer ifall vi behöver nå dig under årsmöten</div> \
+      <input type='text' id='phone' placeholder='Mobilnummer' value='"+phone+"'/><br><br>";
+        
+      html+="<div class='info'>Ange ditt kön om du önskar dela rum enbart med medlemmar av samma kön</div>";
       html += getHtmlSelect("gender", "", genders, user.gender, "Kön");
       html+="<br></div>";
       html += getBrowsingBar();
@@ -420,7 +432,8 @@ function Registrator() {
         case 1:
           user.email = $("#email").val();
           user.gender = $("#gender").val();
-          backend.setUserInfo(user.id, user.gender, user.email, answerCallback);
+          user.phone = $("#phone").val();
+          backend.setUserInfo(user.id, user.gender, user.email, user.phone, answerCallback);
           break;
         case 2:
           backend.setUserHotellReg(reg, answerCallback);
