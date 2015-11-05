@@ -62,8 +62,8 @@ function changeTheme(theme) {
 }
 
 function rotateSun() {
-    sunDegrees+=.1;
+    sunDegrees+=.2;
     $("#sol1").css("transform", "rotate("+sunDegrees+"deg)");
     $("#sol2").css("transform", "rotate("+(0-sunDegrees)+"deg)");
-    // setTimeout(rotateSun, 100);
+    setTimeout(rotateSun, 200);
 }

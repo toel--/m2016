@@ -214,6 +214,8 @@ function Registrator() {
       var sharingWith = (reg.shareRoom==="2");
       var nbAdults = parseInt(reg.nbAdults);
       var nbChildrens = parseInt(reg.nbChildrens);
+      if (nbAdults !== nbAdults) nbAdults=0;
+      if (nbChildrens !== nbChildrens) nbChildrens=0;
 
       if (sharingWith) {
         $( "#shareRoom" ).animate({width:'55%'}, function() {$("#shareWith").fadeIn();});
