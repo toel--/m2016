@@ -127,15 +127,15 @@ function Registrator() {
 
       // Number of person
       var nbAdults = {
-        "1":"Bara jag",
+        "1":"Jag",
         "2":"Jag +1",
         "3":"Jag +2",
         "4":"Jag +3"
       };
       var nbChildrens = {
         "0":"",
-        "1":"+1",
-        "2":"+2"
+        "1":"+1 barn",
+        "2":"+2 barn"
       };
       
       html+=getHtmlSelect('nbAdults', '', nbAdults, reg.nbAdults, "Välj antal personner");
