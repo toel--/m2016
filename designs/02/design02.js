@@ -6,6 +6,7 @@ var themes = {
     "default":["#00babd","#87d1d4"],
     "grey":["silver","grey"],
     "mensa":["#0099FF","#E5F4FF"],
+    "vasttrafik":["#00AEEC","#E5F4FF"],
     "gbg":["#1b78cc","#E5F4FF"]
 };
 var sunDegrees = 0;

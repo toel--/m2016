@@ -39,6 +39,7 @@ function populateMenuGuest() {
     {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
     {"id":"mnuMensaGbg","label":"Mensa Göteborg","function":doShowMensaGbg},
     {"id":"mnuGothenburg","label":"Göteborg","function":doShowAboutGbg},
+    {"id":"mnuVasttrafik","label":"Västtrafik","function":doShowAboutVasttrafik},
     {"id":"mnuHotel","label":"Hotell","function":doShowAboutHotel},
     {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
     {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
@@ -53,8 +54,12 @@ function populateMenuMember() {
     {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
     {"id":"mnuMensaGbg","label":"Mensa Göteborg","function":doShowMensaGbg},
     {"id":"mnuGothenburg","label":"Göteborg","function":doShowAboutGbg},
+    {"id":"mnuVasttrafik","label":"Hotell","function":doShowAboutVasttrafik},
     {"id":"mnuHotel","label":"Hotell","function":doShowAboutHotel},
     {"id":"mnuMembers","label":"Årsträffen","function":doShowMembersPage},
+    {"id":"mnuActivities","label":"Aktiviteter","function":doShowActivitiesPage},
+    {"id":"mnuMeeting","label":"Årsmöte","function":doShowMeetingPage},
+    {"id":"mnuGalamiddag","label":"Galamiddag","function":doShowGalamiddagPage},
     {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
   ];
   populateMenu(mnuRows);
@@ -193,6 +198,12 @@ function doShowAboutGbg() {
   populateMainContent("about_gothenburg");
 }
 
+function doShowAboutVasttrafik() {
+  menuClose();
+  changeTheme("vasttrafik");
+  populateMainContent("about_vasttrafik");
+}
+
 function doShowAboutHotel() {
   menuClose();
   changeTheme("default");
@@ -202,6 +213,21 @@ function doShowAboutHotel() {
 function doShowMembersPage() {
   menuClose();
   populateMainContent("members_welcome");
+}
+
+function doShowActivitiesPage() {
+  menuClose();
+  populateMainContent("members_activities");
+}
+
+function doShowMeetingPage() {
+  menuClose();
+  populateMainContent("members_meeting");
+}
+
+function doShowGalamiddagPage() {
+  menuClose();
+  populateMainContent("members_galamiddag");
 }
 
 function doShowForgotPasswordPage() {

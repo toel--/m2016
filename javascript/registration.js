@@ -9,8 +9,8 @@ function Registrator() {
     var step = 0;
     var stepsCount = 3;
     var user = {"id":"","email":"","phone":"","gender": "-1"};
-    var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"0"};
-    var lastReg = {"roomType":"","package":"","shareRoom":""};
+    var reg = {"roomType":"","package":"","shareRoom":"0","shareWith":"","nbAdults":"0","nbChildrens":"0"};
+    var lastReg = {"roomType":"","package":"","shareRoom":"","shareWith":""};
     var lastTotal = 0;
     
 
@@ -284,7 +284,6 @@ function Registrator() {
 
       }
 
-      // var reg = {"roomType":"","package":true,"shareRoom":""};
       // Select / deselect on change
       if (lastReg.roomType!==reg.roomType) {
         $("#room_image").html("<div>"+room.description+"</div><img src='images/opalen/"+reg.roomType+".jpg' width='400'>");

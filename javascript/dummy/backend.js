@@ -6,7 +6,7 @@ function MensaBackend() {
     dbUsers = TAFFY( getJsonUsers() );
     dbText = TAFFY( getJsonText() );
     var loggedInUser = false;
-    var reg = {"roomType":"","package":"","shareRoom":"0","nbAdults":"0","nbChildrens":"-"};
+    var reg = {"roomType":"","package":"","shareRoom":"0","shareWith":"","nbAdults":"0","nbChildrens":"-"};
 
     /**** public ****/
 
