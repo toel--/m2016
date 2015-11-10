@@ -244,6 +244,7 @@ function doEditClick() {
   var action = $(this).html();
   switch (action) {
     case "edit":
+      $("#submenu").hide();
       $(".btnEdit").hide();
       $(this).html("save").show();
       break;
@@ -253,6 +254,7 @@ function doEditClick() {
       backend.setText(textId, "sv", text);
       $(this).html("edit");
       $(".btnEdit").show();
+      $("#submenu").show();
       break;
     default:
       alert("Oops!");
