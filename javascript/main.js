@@ -4,7 +4,10 @@ if (!backend.getList) {
 }
 
 var registrator = new Registrator;
+var isLoggedIn = false;
 var isAdmin = false;
+var language = "sv";
+var showingWhat;
 
 /* At startup */
 $(init);
@@ -22,6 +25,10 @@ function init() {
     case "#mnuRegister": doShowRegisterPage(); break;
     default: doShowWelcomePage();
   }
+  
+  $('#lngEN').click(function() {switchLanguage('en');});
+  $('#lngSV').click(function() {switchLanguage('sv');});
+  $('#lngDE').click(function() {switchLanguage('de');});
 
   doWindowResize();
   initDesign();
@@ -33,16 +40,25 @@ function init() {
 
 /********** populate gui ***********/
 
+function switchLanguage(lang) {
+    language=lang;
+    isLoggedIn ? populateMenuMember(): populateMenuGuest();
+    populateMainContent(showingWhat);
+}
+
 function populateMenuGuest() {
 
   var mnuRows = [
-    {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
-    {"id":"mnuMensaGbg","label":"Mensa Göteborg","function":doShowMensaGbg},
-    {"id":"mnuGothenburg","label":"Göteborg","function":doShowAboutGbg},
-    {"id":"mnuVasttrafik","label":"Västtrafik","function":doShowAboutVasttrafik},
-    {"id":"mnuHotel","label":"Hotell","function":doShowAboutHotel},
-    {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
-    {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
+    {"id":"mnuWelcome","sv":"Välkommen","en":"Welcome","de":"Willkommen","function":doShowWelcomePage},
+    {"id":"mnuMensaGbg","sv":"Mensa Väst","en":"Mensa Väst","de":"Mensa Väst","function":doShowMensaGbg},
+    {"id":"mnuGothenburg","sv":"Göteborg","en":"Gothenburg","de":"Göteborg","function":doShowAboutGbg},
+    {"id":"mnuVasttrafik","sv":"Resor","en":"Travel","de":"Resor","function":doShowAboutVasttrafik},
+    {"id":"mnuHotel","sv":"Boende","en":"Boende","de":"Boende","function":doShowAboutHotel},
+    {"id":"mnuContact","sv":"Kontakt","en":"Contact","de":"Kontakt","function":doShowExternalContact},
+    {"id":"mnuFAQ","sv":"FAQ","en":"FAQ","de":"FAQ","function":doShowExternalFAQ},
+    
+    // {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
+    {"id":"mnuRegister","sv":"Logga in","en":"Login","de":"Registrera","function":doShowRegisterPage}
   ];
   populateMenu(mnuRows);
 
@@ -51,16 +67,18 @@ function populateMenuGuest() {
 function populateMenuMember() {
 
   var mnuRows = [
-    {"id":"mnuWelcome","label":"Välkommen","function":doShowWelcomePage},
-    {"id":"mnuMensaGbg","label":"Mensa Göteborg","function":doShowMensaGbg},
-    {"id":"mnuGothenburg","label":"Göteborg","function":doShowAboutGbg},
-    {"id":"mnuVasttrafik","label":"Hotell","function":doShowAboutVasttrafik},
-    {"id":"mnuHotel","label":"Hotell","function":doShowAboutHotel},
-    {"id":"mnuMembers","label":"Årsträffen","function":doShowMembersPage},
-    {"id":"mnuActivities","label":"Aktiviteter","function":doShowActivitiesPage},
-    {"id":"mnuMeeting","label":"Årsmöte","function":doShowMeetingPage},
-    {"id":"mnuGalamiddag","label":"Galamiddag","function":doShowGalamiddagPage},
-    {"id":"mnuRegister","label":"Registrera","function":doShowRegisterPage}
+    {"id":"mnuWelcome","sv":"Välkommen","en":"Welcome","de":"Willkommen","function":doShowWelcomePage},
+    {"id":"mnuMensaGbg","sv":"Mensa Väst","en":"Mensa Väst","de":"Mensa Väst","function":doShowMensaGbg},
+    {"id":"mnuGothenburg","sv":"Göteborg","en":"Gothenburg","de":"Göteborg","function":doShowAboutGbg},
+    {"id":"mnuVasttrafik","sv":"Resor","ev":"Travel","de":"Resor","function":doShowAboutVasttrafik},
+    {"id":"mnuHotel","sv":"Boende","en":"Boende","de":"Boende","function":doShowAboutHotel},
+    {"id":"mnuContact","sv":"Kontakt","en":"Contact","de":"Kontakt","function":doShowMembersContact},
+    {"id":"mnuFAQ","sv":"FAQ","en":"FAQ","de":"FAQ","function":doShowMembersFAQ},
+    {"id":"mnuMembers","sv":"Årsträffen","en":"Årsträffen","de":"Årsträffen","function":doShowMembersPage},
+    {"id":"mnuActivities","sv":"Aktiviteter","en":"Activities","de":"Aktiviteter","function":doShowActivitiesPage},
+    {"id":"mnuMeeting","sv":"Årsmöte","en":"Årsmöte","de":"Årsmöte","function":doShowMeetingPage},
+    {"id":"mnuGalamiddag","sv":"Galamiddag","en":"Galamiddag","de":"Galamiddag","function":doShowGalamiddagPage},
+    {"id":"mnuRegister","sv":"Registrera","en":"Register","de":"Registrera","function":doShowRegisterPage}
   ];
   populateMenu(mnuRows);
 
@@ -81,7 +99,8 @@ function populateSubMenuWelcome() {
 
 function populateMainContent(what) {
 
-  backend.getText(what, "sv", callback);
+  showingWhat = what;
+  backend.getText(what, language, callback);
 
   function callback(text) {
     doShow(what, text);
@@ -108,7 +127,7 @@ function populateSubMenu(mnuRows) {
   $("#submenu").html("").hide();
   for (var i = 0; i< mnuRows.length; i++){
     var mnuRow = mnuRows[i];
-    var html="<div id='"+mnuRow.id+"' class='button' title='"+mnuRow.label+"'>"+mnuRow.label+"</div><br>\n";
+    var html="<div id='"+mnuRow.id+"' class='button' title='"+mnuRow[language]+"'>"+mnuRow[language]+"</div><br>\n";
     $("#submenu").append(html);
     $('#'+mnuRow.id).click(mnuRow.function);
   }
@@ -161,9 +180,88 @@ function doShowLoginPage() {
 
 }
 
+function doShowWelcomePage() {
+  menuClose("mnuWelcome");
+  changeTheme("default");
+  // showSubMenu();
+  // populateSubMenuWelcome();
+  populateMainContent("welcome");
+}
+
+function doShowMensaGbg() {
+  menuClose("mnuMensaGbg");
+  changeTheme("mensa");
+  populateMainContent("mensa_gothenburg");
+}
+
+function doShowAboutGbg() {
+  menuClose("mnuGothenburg");
+  changeTheme("gbg");
+  populateMainContent("about_gothenburg");
+}
+
+function doShowAboutVasttrafik() {
+    
+  menuClose("mnuVasttrafik");
+  changeTheme("vasttrafik");
+  populateMainContent("about_vasttrafik");
+}
+
+function doShowAboutHotel() {
+  menuClose("mnuHotel");
+  changeTheme("default");
+  populateMainContent("about_hotel");
+}
+
+function doShowMembersPage() {
+  menuClose("mnuMembers");
+  populateMainContent("members_welcome");
+}
+
+function doShowActivitiesPage() {
+  menuClose("mnuActivities");
+  populateMainContent("members_activities");
+}
+
+function doShowMeetingPage() {
+  menuClose("mnuMeeting");
+  populateMainContent("members_meeting");
+}
+
+function doShowGalamiddagPage() {
+  menuClose("mnuGalamiddag");
+  populateMainContent("members_galamiddag");
+}
+
+function doShowForgotPasswordPage() {
+  menuClose();
+  populateMainContent("forgotPasswordPage");
+}
+
+function doShowExternalContact() {
+  menuClose("mnuContact");
+  populateMainContent("contact");
+}
+
+function doShowMembersContact() {
+  menuClose("mnuContact");
+  populateMainContent("members_contact");
+}
+
+function doShowExternalFAQ() {
+  menuClose("mnuFAQ");
+  populateMainContent("FAQ");
+}
+
+function doShowMembersFAQ() {
+  menuClose("mnuFAQ");
+  populateMainContent("members_FAQ");
+}
+
+
 function doShowRegisterPage() {
 
-  menuClose();
+  menuClose("mnuRegister");
   changeTheme("grey");
   registrator.getHtml(callback);
 
@@ -176,63 +274,6 @@ function doShowRegisterPage() {
     }
   }
 
-}
-
-function doShowWelcomePage() {
-  menuClose();
-  changeTheme("default");
-  // showSubMenu();
-  // populateSubMenuWelcome();
-  populateMainContent("welcome");
-}
-
-function doShowMensaGbg() {
-  menuClose();
-  changeTheme("mensa");
-  populateMainContent("mensa_gothenburg");
-}
-
-function doShowAboutGbg() {
-  menuClose();
-  changeTheme("gbg");
-  populateMainContent("about_gothenburg");
-}
-
-function doShowAboutVasttrafik() {
-  menuClose();
-  changeTheme("vasttrafik");
-  populateMainContent("about_vasttrafik");
-}
-
-function doShowAboutHotel() {
-  menuClose();
-  changeTheme("default");
-  populateMainContent("about_hotel");
-}
-
-function doShowMembersPage() {
-  menuClose();
-  populateMainContent("members_welcome");
-}
-
-function doShowActivitiesPage() {
-  menuClose();
-  populateMainContent("members_activities");
-}
-
-function doShowMeetingPage() {
-  menuClose();
-  populateMainContent("members_meeting");
-}
-
-function doShowGalamiddagPage() {
-  menuClose();
-  populateMainContent("members_galamiddag");
-}
-
-function doShowForgotPasswordPage() {
-  menuClose();
-  populateMainContent("forgotPasswordPage");
 }
 
 function doEditClick() {
@@ -251,7 +292,7 @@ function doEditClick() {
     case "save":
       var editor = tinymce.get(id);
       var text = editor.getContent();
-      backend.setText(textId, "sv", text);
+      backend.setText(textId, language, text);
       $(this).html("edit");
       $(".btnEdit").show();
       $("#submenu").show();
@@ -278,7 +319,8 @@ function loginCallback(success) {
         populateMainContent("members_welcome");
         $("#login").fadeOut();
         backend.isAdmin(enableEditable);
-        registrator.isLoggedIn(true);
+        isLoggedIn=true;
+        registrator.isLoggedIn(isLoggedIn);
     } else {
         var message = "Tyvärr inte, klick <div id='btnForgotPassword' class='button' style='display: inline;'>här</div> om du har glömt ditt lösenord."
         $("#lblMessage").html(message).hide().fadeIn(.2).fadeOut(.2).fadeIn();

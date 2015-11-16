@@ -6,6 +6,7 @@ html {
 body {
     height: 100%;
     font-family: arial;
+    overflow: hidden;
 }
 
 a:hover, a:visited, a:link, a:active {
@@ -145,8 +146,16 @@ table {
 }
 
 .button:selected {
-    background-color: #0099FF;
+    background-color: #EFBF27;
 }
+
+.button.selected {
+    background-color: #EFBF27;
+    border-color: #FF9900;
+    color: white;
+    transition-duration: 1s;
+}
+
 
 .btnEdit {
     float: right;
@@ -294,4 +303,31 @@ table {
 #nbChildrens {
     width: 49%;
     float: right;
+}
+
+#lngDE {
+  background: url('../images/flags/de.png') no-repeat;
+  width: 24px;
+  height: 24px;
+  float: left;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+#lngEN {
+  background: url('../images/flags/en.png') no-repeat;
+  width: 24px;
+  height: 24px;
+  float: left;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+#lngSV {
+  background: url('../images/flags/sv.png') no-repeat;
+  width: 24px;
+  height: 24px;
+  float: left;
+  margin-right: 5px;
+  cursor: pointer;
 }

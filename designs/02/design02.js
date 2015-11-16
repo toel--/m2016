@@ -1,6 +1,7 @@
 /**
 contains the javascript methods that are design specific
 */
+var lastSelectedButtonId;
 
 var themes = {
     "default":["#00babd","#87d1d4"],
@@ -36,7 +37,12 @@ function doWindowResize() {
   $("#goteborg").height(gbgH);
 }
 
-function menuClose() {
+function menuClose(btnId) {
+    $("#"+lastSelectedButtonId).removeClass("selected");
+    if (btnId!==undefined) {
+        $("#"+btnId).addClass("selected");
+        lastSelectedButtonId=btnId;
+    }
   // $("#menu").fadeOut();
 }
 
@@ -51,10 +57,11 @@ function changeTheme(theme) {
     
     var colors = themes[theme];
     if (colors) {
-        $("body").animate({backgroundColor: colors[0]}, 1000);
-        $("#bkgplate").animate({backgroundColor: colors[1]}, 1000);
-        $(".button").animate({"border-color": colors[0]}, 500);
-        $('.title').animate({"color": colors[0]}, 500);
+        $("body").animate({'backgroundColor': colors[0]}, 1000);
+        $("#bkgplate").animate({'backgroundColor': colors[1]}, 1000);
+        $(".button").animate({'border-color': colors[0]}, 500);
+        //$(".button.selected").animate({backgroundColor: colors[1]}, 500);
+        $('.title').animate({'color': colors[0]}, 500);
         
         $('head').append('<style>.button {border-color:'+colors[0]+'} .button:hover {background-color: '+colors[0]+';}</style>');
         

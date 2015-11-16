@@ -77,10 +77,10 @@ function Registrator() {
     
     function getCreateAccountHtml(callback) {
       var html = "<div class='registration_box' >" + getRegistrationHeader();
-      html+="Ange ditt medlemsnummer och välj ett lösenord:<br> \
+      html+="Ange ditt medlemsnummer och välj ett<br> lösenord. Konton skapas automatiskt om den saknas.<br> \
       <input type='text' id='username' placeholder='Medlemsnummer'/><br> \
       <input type='password' id='password' placeholder='Lösenord'/><br><br> \
-      <div class='info'>Medlemsnumret skall skrivas in enligt <br>det nya format år+3siffror (yyyyxxx)</div> \
+      <div class='info'>Medlemsnumret skall skrivas in enligt <br>formatet  landkod+år+siffror (SEyyyyxxx)</div> \
 </div>";
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
@@ -138,7 +138,7 @@ function Registrator() {
         "2":"+2 barn"
       };
       
-      html+=getHtmlSelect('nbAdults', '', nbAdults, reg.nbAdults, "Välj antal personner");
+      html+=getHtmlSelect('nbAdults', '', nbAdults, reg.nbAdults, "Välj antal personer");
       html+=getHtmlSelect('nbChildrens', '', nbChildrens, reg.nbChildrens, "Barn mellan 5 och 12");
 
       //var nbPersons = parseInt(reg.nbAdults)+parseInt(reg.nbChildrens);
@@ -148,7 +148,7 @@ function Registrator() {
         // Type of room
         var roomTypes = {};
         for (var i = 0; i< rooms.length; i++){
-          roomTypes[rooms[i].id]=rooms[i].id+", "+rooms[i].Ps+" personer";
+          roomTypes[rooms[i].id]=rooms[i].id+", 1-"+rooms[i].Ps+" personer";
         };
 
         html+="<div style='width: 399px'>";
@@ -268,13 +268,20 @@ function Registrator() {
       var events = getHotelEvents();
       for (var i=0; i<events.length; i++) {
         var event = events[i];
+        var isRoom = (event.id.substring(0,1)==="N");
         var inPackage = (package && ($.inArray(event.id, package.events)>=0));
         if (inPackage) reg[event.id]=true;
         var disabled = inPackage;
         if (event.linked!==undefined) {
-          disabled=true;                            // linked events are allways disabled
+          disabled=true;                            // linked events are always disabled
           reg[event.id]=reg[event.linked];
         }
+        
+        // Night are always disabled unless a logi package is choosen
+        if (isRoom) {
+            disabled = !(package!==undefined && package.id!=="matologi");
+        }
+        
         if (disabled) {
           $("#"+event.id).attr("disabled", true);
         } else {
@@ -398,18 +405,25 @@ function Registrator() {
     }
 
     function getRegistrationHeader() {
-      var html = "<div class='header'>###title###</div>";
-      if (step>0) html += "steg "+step+" av "+stepsCount;
-      html += "<br><br>";
-      var title;
-      switch (step) {
-        case 0: title = "Skapa ett konto"; break;
-        case 1: title = "Om dig"; break;
-        case 2: title = "hotellbokning"; break;
-        case 3: title = "Aktivitet"; break;
-        default: title = "-----";
+        
+      var translations = [
+  {"en":"Create an account", "sv":"Skapa ett konto", "de":"Skapa ett konto"},
+  {"en":"More about you", "sv":"Mer om dig", "de":"Mer om dir"},
+  {"en":"Mat & logi", "sv":"Mat & logi", "de":"Mat & logi"},
+  {"en":"Activities", "sv":"Aktivitet", "de":"Aktivitet"}
+  ];
+      
+      var html = "";
+      if (step>0) {
+        html +="<div class='registration_menu'>";
+        for (var key in translations) {
+            if (key>0) html += "<div class='button' style='display: inline; margin-right: 5px;'>"+translations[key][language]+"</div>";
+        }
+        html+="</div><br>";
       }
-      return html.replace("###title###", title);
+      html+="<div class='header'>"+translations[step][language]+"</div><br>";
+      
+      return html;
     }
 
     function getBrowsingBar() {
