@@ -27,13 +27,14 @@ function Registrator() {
         case 3: html = getHtml3(callback); break;
         default: html = "Oops!";
       }
-    };
-
+    }
+    
     /** register event listenders for the html of the current step */
     this.doRegisterEventListeners = function() {
       switch (step) {
         case 2: registerEventListenersRegisterHotel(); break;
       }
+      $("#btnReg"+step).addClass("selected");
     }
 
     this.doPrevious = function() {
@@ -62,11 +63,31 @@ function Registrator() {
       }
     }
 
+    // duplicate code to handle the reg menu: not good at all, but it will do for now
+    this.doRegMenuClick = function(jumpToStep) {
+        
+        performStep(callback);
+        
+        function callback() {
+            
+            step=jumpToStep;
+
+            registrator.getHtml(callback);
+
+            function callback(html) {
+                doShow("registration", html, callback2);
+                function callback2() {
+                  $("#btnPrevious").click(registrator.doPrevious);
+                  $("#btnNext").click(registrator.doNext);
+                  doRegisterEventListeners();
+                }
+            }
+        }
+    }
 
     /***************************************************************************
      * private 
      **************************************************************************/
-    
     function getUserInformationCallback(data) {
         user = data;
     }
@@ -194,8 +215,10 @@ function Registrator() {
 
       $("input").change(onRegisterHotelEvent);
       $("select").change(onRegisterHotelEvent);
+      
       doRegistrationUpdate();
-
+      
+      
     }
 
     function onRegisterHotelEvent() {
@@ -417,7 +440,7 @@ function Registrator() {
       if (step>0) {
         html +="<div class='registration_menu'>";
         for (var key in translations) {
-            if (key>0) html += "<div class='button' style='display: inline; margin-right: 5px;'>"+translations[key][language]+"</div>";
+            if (key>0) html += "<div id='btnReg"+key+"' class='button' onClick='registrator.doRegMenuClick("+key+");' style='display: inline; margin-right: 5px;'>"+translations[key][language]+"</div>";
         }
         html+="</div><br>";
       }
@@ -435,56 +458,60 @@ function Registrator() {
     }
 
     function performStep(callback) {
-      
+
         switch (step) {
-        case 0:
-          user.id = $("#username").val();
-          var password = $("#password").val();
-          backend.createUser(user.id, password, createUserCallback);
-          break;
-        case 1:
-          user.email = $("#email").val();
-          user.gender = $("#gender").val();
-          user.phone = $("#phone").val();
-          backend.setUserInfo(user.id, user.gender, user.email, user.phone, answerCallback);
-          break;
-        case 2:
-          backend.setUserHotellReg(reg, answerCallback);
-          break;
-        default:
-      }
-
-      function createUserCallback(answer) {
-        if (answer.success) {
-          var password = $("#password").val();
-          backend.login(user.id, password, loginUserCallback);
-        } else {
-          $("#lblMessage").html(answer.message);
-          alertify.error(answer.message);
+            case 0:
+                user.id = $("#username").val();
+                var password = $("#password").val();
+                backend.createUser(user.id, password, createUserCallback);
+                break;
+            case 1:
+                user.email = $("#email").val();
+                user.gender = $("#gender").val();
+                user.phone = $("#phone").val();
+                backend.setUserInfo(user.id, user.gender, user.email, user.phone, answerCallback);
+                break;
+            case 2:
+                backend.setUserHotellReg(reg, answerCallback);
+                break;
+            default:
         }
 
-        function loginUserCallback(success) {
-          if (success) {
-              backend.getUser(getUserInformationCallback);
-              backend.getUserHotellReg(getUserHotellRegCallback);
-              populateMenuMember();
-              setTimeout(function(){callback(true);}, 200); 
-          } else {
-              $("#lblMessage").html("Oops!");
-          }
+        function createUserCallback(answer) {
+            if (answer.success) {
+                var password = $("#password").val();
+                backend.login(user.id, password, loginUserCallback);
+            } else {
+                $("#lblMessage").html(answer.message);
+                alertify.error(answer.message);
+            }
+
+            function loginUserCallback(success) {
+                if (success) {
+                    backend.getUser(getUserInformationCallback);
+                    backend.getUserHotellReg(getUserHotellRegCallback);
+                    populateMenuMember();
+                    setTimeout(function () {
+                        callback(true);
+                    }, 200);
+                    $("#btnReg" + step).removeClass("selected");
+                } else {
+                    $("#lblMessage").html("Oops!");
+                }
+
+            }
 
         }
 
-      }
-
-      function answerCallback(answer) {
-        if (answer.success) {
-          callback(true);
-        } else {
-          $("#lblMessage").html(answer.message);
-          alertify.error(answer.message);
+        function answerCallback(answer) {
+            if (answer.success) {
+                $("#btnReg" + step).removeClass("selected");
+                callback(true);
+            } else {
+                $("#lblMessage").html(answer.message);
+                alertify.error(answer.message);
+            }
         }
-      }
 
     }
 
