@@ -146,13 +146,13 @@ table {
 }
 
 .button:selected {
-    background-color: #EFBF27;
+    background-color: #EEEEEE; /* #EFBF27; */
 }
 
 .button.selected {
-    background-color: #EFBF27;
+    background-color: #EEEEEE;
     border-color: #FF9900;
-    color: white;
+    color: black;
     transition-duration: 1s;
 }
 
@@ -228,6 +228,8 @@ table {
 }
 
 #logo {
+    display: none;
+    top: -60px;
     left: 10px;
     position: absolute;
 }
@@ -252,6 +254,10 @@ table {
 }
 
 #gender  {
+    width: 200px;
+}
+
+#arrival  {
     width: 200px;
 }
 
@@ -284,11 +290,11 @@ table {
 #wrapper {
   overflow: hidden; /* clear the float */
 }
+
 #submenu {
+  margin-top: 20px;
   width: 100px;
   float: left;
-  margin-right: 20px;
-  position: absolute;
 }
 #main_content {
   overflow: hidden;

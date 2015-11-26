@@ -3,6 +3,7 @@ if (!backend.getList) {
     backend = new MensaBackend;
 }
 
+var trans = new Translations;
 var registrator = new Registrator;
 var isLoggedIn = false;
 var isAdmin = false;
@@ -49,16 +50,16 @@ function switchLanguage(lang) {
 function populateMenuGuest() {
 
   var mnuRows = [
-    {"id":"mnuWelcome","sv":"Välkommen","en":"Welcome","de":"Willkommen","function":doShowWelcomePage},
-    {"id":"mnuMensaGbg","sv":"Mensa Väst","en":"Mensa Väst","de":"Mensa Väst","function":doShowMensaGbg},
-    {"id":"mnuGothenburg","sv":"Göteborg","en":"Gothenburg","de":"Göteborg","function":doShowAboutGbg},
-    {"id":"mnuVasttrafik","sv":"Resor","en":"Travel","de":"Resor","function":doShowAboutVasttrafik},
-    {"id":"mnuHotel","sv":"Boende","en":"Boende","de":"Boende","function":doShowAboutHotel},
-    {"id":"mnuContact","sv":"Kontakt","en":"Contact","de":"Kontakt","function":doShowExternalContact},
-    {"id":"mnuFAQ","sv":"FAQ","en":"FAQ","de":"FAQ","function":doShowExternalFAQ},
+    {"id":"mnuWelcome","theme":"green","logo":"images/glenn/volare.png","function":doShowWelcomePage},
+    {"id":"mnuAG","theme":"yellow","function":doShowAG},
+    {"id":"mnuHotel","function":doShowAboutHotel},
+    {"id":"mnuVasttrafik","function":doShowAboutVasttrafik},
+    {"id":"mnuContact","function":doShowContact},
+    {"id":"mnuFAQ","function":doShowFAQ},
+    {"id":"mnuMensaGbg","function":doShowMensaGbg},
+    {"id":"mnuGothenburg","function":doShowAboutGbg},
     
-    // {"id":"mnuLogin","label":"Logga in","function":doShowLoginPage},
-    {"id":"mnuRegister","sv":"Logga in","en":"Login","de":"Registrera","function":doShowRegisterPage}
+    {"id":"mnuLogin","function":doShowRegisterPage}
   ];
   populateMenu(mnuRows);
 
@@ -67,35 +68,28 @@ function populateMenuGuest() {
 function populateMenuMember() {
 
   var mnuRows = [
-    {"id":"mnuWelcome","sv":"Välkommen","en":"Welcome","de":"Willkommen","function":doShowWelcomePage},
-    {"id":"mnuMensaGbg","sv":"Mensa Väst","en":"Mensa Väst","de":"Mensa Väst","function":doShowMensaGbg},
-    {"id":"mnuGothenburg","sv":"Göteborg","en":"Gothenburg","de":"Göteborg","function":doShowAboutGbg},
-    {"id":"mnuVasttrafik","sv":"Resor","ev":"Travel","de":"Resor","function":doShowAboutVasttrafik},
-    {"id":"mnuHotel","sv":"Boende","en":"Boende","de":"Boende","function":doShowAboutHotel},
-    {"id":"mnuContact","sv":"Kontakt","en":"Contact","de":"Kontakt","function":doShowMembersContact},
-    {"id":"mnuFAQ","sv":"FAQ","en":"FAQ","de":"FAQ","function":doShowMembersFAQ},
-    {"id":"mnuMembers","sv":"Årsträffen","en":"Årsträffen","de":"Årsträffen","function":doShowMembersPage},
-    {"id":"mnuActivities","sv":"Aktiviteter","en":"Activities","de":"Aktiviteter","function":doShowActivitiesPage},
-    {"id":"mnuMeeting","sv":"Årsmöte","en":"Årsmöte","de":"Årsmöte","function":doShowMeetingPage},
-    {"id":"mnuGalamiddag","sv":"Galamiddag","en":"Galamiddag","de":"Galamiddag","function":doShowGalamiddagPage},
-    {"id":"mnuRegister","sv":"Registrera","en":"Register","de":"Registrera","function":doShowRegisterPage}
+    {"id":"mnuWelcome","theme":"green","function":doShowWelcomePage},
+    
+    {"id":"mnuAG","theme":"yellow","function":doShowAG},
+    {"id":"mnuAGM","theme":"yellow","function":doShowAGM},
+    {"id":"mnuActivities","theme":"yellow","function":doShowActivitiesPage},
+    {"id":"mnuGalamiddag","theme":"yellow","function":doShowGalamiddagPage},
+    
+    {"id":"mnuHotel","theme":"default","function":doShowAboutHotel},
+    
+    {"id":"mnuVasttrafik","theme":"green","function":doShowAboutVasttrafik},
+    {"id":"mnuContact","theme":"default","function":doShowContact},
+    {"id":"mnuFAQ","theme":"default","function":doShowFAQ},
+    {"id":"mnuMensaGbg","theme":"default","function":doShowMensaGbg},
+    {"id":"mnuGothenburg","theme":"default","function":doShowAboutGbg},
+    
+    {"id":"mnuRegister","theme":"green","function":doShowRegisterPage},
+    
+    {"id":"mnuLogout","theme":"white","function":doLogout}
   ];
   populateMenu(mnuRows);
 
 }
-/*
-function populateSubMenuWelcome() {
-
-  var mnuRows = [
-    {"id":"mnuSub_0","label":"Välkommen","function":doShowWelcomePage},
-    {"id":"mnuSub_1","label":"Mensa Göteborg","function":function(){populateMainContent("mensa_gothenburg");}},
-    {"id":"mnuSub_2","label":"Göteborg","function":function(){populateMainContent("about_gothenburg");}},
-    {"id":"mnuSub_3","label":"Västtrafik","function":function(){populateMainContent("about_vasttrafik");}},
-    {"id":"mnuSub_4","label":"Hotell","function":function(){populateMainContent("about_hotel");}},
-  ];
-  populateSubMenu(mnuRows);
-
-}*/
 
 function populateMainContent(what) {
 
@@ -127,7 +121,14 @@ function populateSubMenu(mnuRows) {
   $("#submenu").html("").hide();
   for (var i = 0; i< mnuRows.length; i++){
     var mnuRow = mnuRows[i];
-    var html="<div id='"+mnuRow.id+"' class='button' title='"+mnuRow[language]+"'>"+mnuRow[language]+"</div><br>\n";
+    var label=trans.get(mnuRow.id, language);
+    var cssClass = "button";
+    var theme = "";
+    if (mnuRow.theme!==undefined) {
+        theme = mnuRow.theme;
+        cssClass += " "+theme;
+    }
+    var html="<div id='"+mnuRow.id+"' class='"+cssClass+"' title='"+label+"' theme='"+theme+"'>"+label+"</div><br>\n";
     $("#submenu").append(html);
     $('#'+mnuRow.id).click(mnuRow.function);
   }
@@ -155,7 +156,7 @@ function doShow(what, html, callback) {
   setTimeout(function() {
     $("#main_content").attr("what", what).html(html).fadeIn();
     if (callback!==undefined) callback();
-  }, 300);
+  }, 500);
 
 }
 
@@ -182,54 +183,77 @@ function doShowLoginPage() {
 
 function doShowWelcomePage() {
   menuClose("mnuWelcome");
-  changeTheme("default");
+  changeTheme("green");
+  changeLogo("volare");
   // showSubMenu();
   // populateSubMenuWelcome();
-  populateMainContent("welcome");
+  if (isLoggedIn) {
+    populateMainContent("members_welcome");
+  } else {
+    populateMainContent("welcome");
+  }
+}
+
+function doShowAG() {
+  menuClose("mnuAG");
+  changeLogo("landar");
+  changeTheme("yellow");
+  if (isLoggedIn) {
+    populateMainContent("members_AG");
+  } else {
+    populateMainContent("about_AG");
+  }
+}
+
+function doShowAGM() {
+  menuClose("mnuAG");
+  changeLogo("kavat");
+  changeTheme("yellow");
+  populateMainContent("members_meeting");
 }
 
 function doShowMensaGbg() {
   menuClose("mnuMensaGbg");
-  changeTheme("mensa");
+  changeTheme("default");
   populateMainContent("mensa_gothenburg");
 }
 
 function doShowAboutGbg() {
   menuClose("mnuGothenburg");
-  changeTheme("gbg");
+  changeTheme("default");
   populateMainContent("about_gothenburg");
 }
 
 function doShowAboutVasttrafik() {
     
   menuClose("mnuVasttrafik");
-  changeTheme("vasttrafik");
+  changeLogo("travolta");
+  changeTheme("default");
   populateMainContent("about_vasttrafik");
 }
 
 function doShowAboutHotel() {
   menuClose("mnuHotel");
+  changeLogo("kavat");
   changeTheme("default");
-  populateMainContent("about_hotel");
-}
-
-function doShowMembersPage() {
-  menuClose("mnuMembers");
-  populateMainContent("members_welcome");
+  if (isLoggedIn) {
+    populateMainContent("members_hotel");
+  } else {
+    populateMainContent("about_hotel");
+  }
 }
 
 function doShowActivitiesPage() {
   menuClose("mnuActivities");
+  changeTheme("yellow");
   populateMainContent("members_activities");
 }
 
-function doShowMeetingPage() {
-  menuClose("mnuMeeting");
-  populateMainContent("members_meeting");
-}
 
 function doShowGalamiddagPage() {
   menuClose("mnuGalamiddag");
+  changeLogo("travolta");
+  changeTheme("yellow");
   populateMainContent("members_galamiddag");
 }
 
@@ -238,26 +262,25 @@ function doShowForgotPasswordPage() {
   populateMainContent("forgotPasswordPage");
 }
 
-function doShowExternalContact() {
+function doShowContact() {
   menuClose("mnuContact");
-  populateMainContent("contact");
+  changeTheme("default");
+  if (isLoggedIn) {
+    populateMainContent("members_contact");
+  } else {
+    populateMainContent("about_contact");
+  }
 }
 
-function doShowMembersContact() {
-  menuClose("mnuContact");
-  populateMainContent("members_contact");
-}
-
-function doShowExternalFAQ() {
+function doShowFAQ() {
   menuClose("mnuFAQ");
-  populateMainContent("FAQ");
+  changeTheme("default");
+  if (isLoggedIn) {
+    populateMainContent("members_FAQ");
+  } else {
+    populateMainContent("about_FAQ");
+  }
 }
-
-function doShowMembersFAQ() {
-  menuClose("mnuFAQ");
-  populateMainContent("members_FAQ");
-}
-
 
 function doShowRegisterPage() {
 
@@ -312,9 +335,20 @@ function doLogin() {
 
 }
 
+function doLogout() {
+
+    backend.logout(callback);
+    
+    function callback() {
+        populateMenuGuest()();
+        populateMainContent("welcome");
+    }
+
+}
+
 function loginCallback(success) {
     if (success) {
-        changeTheme("default");
+        changeTheme("green");
         populateMenuMember();
         populateMainContent("members_welcome");
         $("#login").fadeOut();

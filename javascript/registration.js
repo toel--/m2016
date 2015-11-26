@@ -98,34 +98,44 @@ function Registrator() {
     
     function getCreateAccountHtml(callback) {
       var html = "<div class='registration_box' >" + getRegistrationHeader();
-      html+="Ange ditt medlemsnummer och välj ett<br> lösenord. Konton skapas automatiskt om den saknas.<br> \
+      html+=trans.get("createAccountInfo", language);
+      html+="<br> \
       <input type='text' id='username' placeholder='Medlemsnummer'/><br> \
       <input type='password' id='password' placeholder='Lösenord'/><br><br> \
-      <div class='info'>Medlemsnumret skall skrivas in enligt <br>formatet  landkod+år+siffror (SEyyyyxxx)</div> \
+      <div class='info'>"+trans.get("createAccountInfo2", language)+"</div> \
 </div>";
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
     }
 
     function getPopulateAccountHtml(callback) {
+    
       var email="", phone="";
       if (user) {
           email=user.email;
           phone=user.phone;
       }
-      var genders = {"0":"kvinna", "1":"man"};
-      var html = "<div class='registration_box' >" + getRegistrationHeader();
-      html+="<b>Frivilig information</b><br><br>";
+      var genders = {"0": trans.get("woman", language), "1": trans.get("man", language)};
+      var arrivals = ["2016-05-04 17.00", "2016-05-04 18.00", "2016-05-04 19.00", "2016-05-04 20.00", "2016-05-04 21.00", "2016-05-05 07.00", "2016-05-05 08.00", "2016-05-05 09.00"];
       
-      html+="<div class='info'>Ange ditt email adress om du vill kunna ta emot information om årsmöten via mail</div> \
-      <input type='email' id='email' placeholder='Email' value='"+email+"'/><br><br>";
+      
+      var html = "<div class='registration_box' >" + getRegistrationHeader();
+      html+="<b>"+trans.get("optionalUserInfo", language)+"</b><br><br>";
+      
+      html+="<div class='info'>"+trans.get("descEmail", language)+"</div> \
+      <input type='email' id='email' placeholder='"+trans.get("email", language)+"' value='"+email+"'/><br><br>";
         
-      html+="<div class='info'>Ange ditt telefon nummer ifall vi behöver nå dig under årsmöten</div> \
-      <input type='text' id='phone' placeholder='Mobilnummer' value='"+phone+"'/><br><br>";
+      html+="<div class='info'>"+trans.get("descPhone", language)+"</div> \
+      <input type='text' id='phone' placeholder='"+trans.get("phone", language)+"' value='"+phone+"'/><br><br>";
         
-      html+="<div class='info'>Ange ditt kön om du önskar dela rum enbart med medlemmar av samma kön</div>";
-      html += getHtmlSelect("gender", "", genders, user.gender, "Kön");
-      html+="<br></div>";
+      html+="<div class='info'>"+trans.get("descGender", language)+"</div>";
+      html += getHtmlSelect("gender", "", genders, user.gender, "");
+      html+="<br><br>";
+      
+      html+="<div class='info'>"+trans.get("descArrival", language)+"</div>";
+      html += getHtmlSelect("arrival", "", arrivals, user.arrival, "");
+      
+      html += "</div>";
       html += getBrowsingBar();
       setTimeout(callback(html), 1);
     }
@@ -429,22 +439,17 @@ function Registrator() {
 
     function getRegistrationHeader() {
         
-      var translations = [
-  {"en":"Create an account", "sv":"Skapa ett konto", "de":"Skapa ett konto"},
-  {"en":"More about you", "sv":"Mer om dig", "de":"Mer om dir"},
-  {"en":"Mat & logi", "sv":"Mat & logi", "de":"Mat & logi"},
-  {"en":"Activities", "sv":"Aktivitet", "de":"Aktivitet"}
-  ];
+      var transKeys = ["createAccount", "moreAboutYou", "foodAndShelter", "events"];
       
       var html = "";
       if (step>0) {
         html +="<div class='registration_menu'>";
-        for (var key in translations) {
-            if (key>0) html += "<div id='btnReg"+key+"' class='button' onClick='registrator.doRegMenuClick("+key+");' style='display: inline; margin-right: 5px;'>"+translations[key][language]+"</div>";
+        for (var key in transKeys) {
+            if (key>0) html += "<div id='btnReg"+key+"' class='button' onClick='registrator.doRegMenuClick("+key+");' style='display: inline; margin-right: 5px;'>"+trans.get(transKeys[key], language)+"</div>";
         }
         html+="</div><br>";
       }
-      html+="<div class='header'>"+translations[step][language]+"</div><br>";
+      html+="<div class='header'>"+trans.get(transKeys[step], language)+"</div><br>";
       
       return html;
     }
@@ -469,7 +474,8 @@ function Registrator() {
                 user.email = $("#email").val();
                 user.gender = $("#gender").val();
                 user.phone = $("#phone").val();
-                backend.setUserInfo(user.id, user.gender, user.email, user.phone, answerCallback);
+                user.arrival = $("#arrival").val();
+                backend.setUserInfo(user.id, user, answerCallback);
                 break;
             case 2:
                 backend.setUserHotellReg(reg, answerCallback);
@@ -482,7 +488,7 @@ function Registrator() {
                 var password = $("#password").val();
                 backend.login(user.id, password, loginUserCallback);
             } else {
-                $("#lblMessage").html(answer.message);
+                $("#lblMessage").html(trans.get(answer.message, language));
                 alertify.error(answer.message);
             }
 

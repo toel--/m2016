@@ -4,11 +4,13 @@ contains the javascript methods that are design specific
 var lastSelectedButtonId;
 
 var themes = {
-    "default":["#00babd","#87d1d4"],
+    "default":["#1ADFEF","#16C0CE"],
     "grey":["silver","grey"],
     "mensa":["#0099FF","#E5F4FF"],
     "vasttrafik":["#00AEEC","#E5F4FF"],
-    "gbg":["#1b78cc","#E5F4FF"]
+    "gbg":["#1b78cc","#E5F4FF"],
+    "green":["#118F99","#16C0CE"],
+    "yellow":["#E6A335","#FFEC82"]
 };
 var sunDegrees = 0;
 
@@ -48,9 +50,9 @@ function menuClose(btnId) {
 
 
 function initDesign() {
-    changeTheme("default");
+    changeTheme("green");
     $("#bottom-content").animate({bottom: "10px"}, 3000);
-    setTimeout(rotateSun, 100);
+    // setTimeout(rotateSun, 100);
 }
 
 function changeTheme(theme) {
@@ -65,9 +67,15 @@ function changeTheme(theme) {
         
         $('head').append('<style>.button {border-color:'+colors[0]+'} .button:hover {background-color: '+colors[0]+';}</style>');
         
-        
     }
 }
+
+function changeLogo(name) {
+    $('#logo').fadeOut();
+    var html="<img src='images/glenn/"+name+".png' >";
+    setTimeout(function() {$('#logo').html(html).fadeIn(500)}, 500);
+}
+
 
 function rotateSun() {
     sunDegrees+=.2;

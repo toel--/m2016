@@ -13,7 +13,7 @@ fieldset {
 
 .box {
   position: relative;
-  width: 70%;
+  width: 76%;
   height: 80%;
   min-width: 600px;
   min-height: 400px;
@@ -87,14 +87,7 @@ fieldset {
   /* text-align: center; */
 }
 
-#logo {
-  left: 10px;
-  top: 20px;
-  width: 100px;
-  height: 71px;
-  position: absolute;
-  background-image: url('images/fjader4.png');
-}
+
 
 #goteborg {
   width: 40%;

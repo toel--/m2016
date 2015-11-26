@@ -128,14 +128,13 @@ function MensaBackend() {
     };
 
     // set the user info
-    this.setUserInfo = function(id, gender, email, phone, callback) {
+    this.setUserInfo = function(id, data, callback) {
 
       var answer = {"success":true, "message":""};
-      var user = dbUsers({"id":id}).first();
 
       if (loggedInUser && (loggedInUser.admin || loggedInUser.id === id)) {
 
-        dbUsers({id:id}).update({"email":email,"gender":gender,"phone":phone});
+        dbUsers({id:id}).update({"email":data.email,"gender":data.gender,"phone":data.phone,"arrival":data.arrival});
 
       } else {
           answer["success"]=false;
