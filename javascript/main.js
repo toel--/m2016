@@ -4,6 +4,7 @@ if (!backend.getList) {
 }
 
 var trans = new Translations;
+var text = new Texts;
 var registrator = new Registrator;
 var isLoggedIn = false;
 var isAdmin = false;
@@ -96,9 +97,17 @@ function populateMainContent(what) {
   showingWhat = what;
   backend.getText(what, language, callback);
 
-  function callback(text) {
-    doShow(what, text);
+  function callback(s) {
+    doShow(what, s);
   }
+
+}
+
+function populateMainContent_(what) {
+
+  showingWhat = what;
+  var s = text.get(what, language);
+  doShow(what, s);
 
 }
 
@@ -128,7 +137,7 @@ function populateSubMenu(mnuRows) {
         theme = mnuRow.theme;
         cssClass += " "+theme;
     }
-    var html="<div id='"+mnuRow.id+"' class='"+cssClass+"' title='"+label+"' theme='"+theme+"'>"+label+"</div><br>\n";
+    var html="<div id='"+mnuRow.id+"' class='"+cssClass+"' title='"+label+"' theme='"+theme+"'>"+label+"</div>\n";
     $("#submenu").append(html);
     $('#'+mnuRow.id).click(mnuRow.function);
   }
@@ -214,12 +223,14 @@ function doShowAGM() {
 
 function doShowMensaGbg() {
   menuClose("mnuMensaGbg");
+  changeLogo("kavat");
   changeTheme("default");
   populateMainContent("mensa_gothenburg");
 }
 
 function doShowAboutGbg() {
   menuClose("mnuGothenburg");
+  changeLogo("kavat");
   changeTheme("default");
   populateMainContent("about_gothenburg");
 }
@@ -227,7 +238,7 @@ function doShowAboutGbg() {
 function doShowAboutVasttrafik() {
     
   menuClose("mnuVasttrafik");
-  changeLogo("travolta");
+  changeLogo("kavat");
   changeTheme("default");
   populateMainContent("about_vasttrafik");
 }
@@ -245,6 +256,7 @@ function doShowAboutHotel() {
 
 function doShowActivitiesPage() {
   menuClose("mnuActivities");
+  changeLogo("kavat");
   changeTheme("yellow");
   populateMainContent("members_activities");
 }
@@ -264,6 +276,7 @@ function doShowForgotPasswordPage() {
 
 function doShowContact() {
   menuClose("mnuContact");
+  changeLogo("kavat");
   changeTheme("default");
   if (isLoggedIn) {
     populateMainContent("members_contact");
@@ -274,6 +287,7 @@ function doShowContact() {
 
 function doShowFAQ() {
   menuClose("mnuFAQ");
+  changeLogo("kavat");
   changeTheme("default");
   if (isLoggedIn) {
     populateMainContent("members_FAQ");
@@ -285,6 +299,7 @@ function doShowFAQ() {
 function doShowRegisterPage() {
 
   menuClose("mnuRegister");
+  changeLogo("kavat");
   changeTheme("grey");
   registrator.getHtml(callback);
 
@@ -314,8 +329,8 @@ function doEditClick() {
       break;
     case "save":
       var editor = tinymce.get(id);
-      var text = editor.getContent();
-      backend.setText(textId, language, text);
+      var s = editor.getContent();
+      backend.setText(textId, language, s);
       $(this).html("edit");
       $(".btnEdit").show();
       $("#submenu").show();
@@ -352,7 +367,7 @@ function loginCallback(success) {
         populateMenuMember();
         populateMainContent("members_welcome");
         $("#login").fadeOut();
-        backend.isAdmin(enableEditable);
+        // backend.isAdmin(enableEditable);
         isLoggedIn=true;
         registrator.isLoggedIn(isLoggedIn);
     } else {

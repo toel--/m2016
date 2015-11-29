@@ -136,6 +136,7 @@ table {
     padding: 5px;
     font-size: 11px;
     transition-duration: .5s;
+    margin-bottom: 8px;
     z-index: 9;
 }
 
@@ -225,6 +226,10 @@ table {
 .info {
     font-size: small;
     color: grey;
+}
+
+.text {
+    line-height: 150%;
 }
 
 #logo {

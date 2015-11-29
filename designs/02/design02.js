@@ -2,6 +2,7 @@
 contains the javascript methods that are design specific
 */
 var lastSelectedButtonId;
+var lastLogoName;
 
 var themes = {
     "default":["#1ADFEF","#16C0CE"],
@@ -71,9 +72,12 @@ function changeTheme(theme) {
 }
 
 function changeLogo(name) {
-    $('#logo').fadeOut();
-    var html="<img src='images/glenn/"+name+".png' >";
-    setTimeout(function() {$('#logo').html(html).fadeIn(500)}, 500);
+    if (name!==lastLogoName) {
+        $('#logo').fadeOut();
+        var html="<img src='images/glenn/"+name+".png' >";
+        setTimeout(function() {$('#logo').html(html).fadeIn(500)}, 500);
+        lastLogoName = name;
+    }
 }
 
 
