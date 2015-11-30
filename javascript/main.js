@@ -215,7 +215,7 @@ function doShowAG() {
 }
 
 function doShowAGM() {
-  menuClose("mnuAG");
+  menuClose("mnuAGM");
   changeLogo("kavat");
   changeTheme("yellow");
   populateMainContent("members_meeting");
@@ -367,7 +367,7 @@ function loginCallback(success) {
         populateMenuMember();
         populateMainContent("members_welcome");
         $("#login").fadeOut();
-        // backend.isAdmin(enableEditable);
+        backend.isAdmin(enableEditable);
         isLoggedIn=true;
         registrator.isLoggedIn(isLoggedIn);
     } else {

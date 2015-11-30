@@ -20,9 +20,6 @@ div,
 dl,
 dt,
 dd,
-ul,
-ol,
-li,
 h1,
 h2,
 h3,
@@ -72,10 +69,6 @@ optgroup {
 del,
 ins {
 	text-decoration: none;
-}
-
-li {
-	list-style: none;
 }
 
 caption,
