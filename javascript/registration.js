@@ -60,6 +60,8 @@ function Registrator() {
         if (step===0) step = 1;
         backend.getUser(getUserInformationCallback);
         backend.getUserHotellReg(getUserHotellRegCallback);
+      } else {
+        step = 0;  
       }
     }
 

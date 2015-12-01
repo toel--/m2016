@@ -355,7 +355,9 @@ function doLogout() {
     backend.logout(callback);
     
     function callback() {
-        populateMenuGuest()();
+        isLoggedIn=false;
+        registrator.isLoggedIn(isLoggedIn);
+        populateMenuGuest();
         populateMainContent("welcome");
     }
 
