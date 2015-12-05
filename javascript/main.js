@@ -17,6 +17,10 @@ $(init);
 /* Init function */
 function init() {
 
+  // alert(navigator.userAgent);
+
+  loadSpecificCss();
+
   $(window).resize(doWindowResize);
   $(window).bind('beforeunload', doWindowBeforeUnload);
   $(window).on("navigate", doWindowNavigate);
@@ -386,6 +390,30 @@ function getUserInformationCallback(data) {
 }
 
 /********** events listeners ***********/
+
+function loadSpecificCss() {
+  
+  var css = undefined;
+  
+  if (navigator.userAgent.indexOf("Safari/8536") > -1) {
+      css = "safari_8536";
+  }
+  if (navigator.userAgent.indexOf("Safari/9537") > -1) {
+      css = "safari_9537";
+  }
+  
+
+
+  if (css!==undefined) {
+    var ipadCss = document.createElement("link");
+    ipadCss.type = "text/css";
+    ipadCss.rel = "stylesheet";
+    ipadCss.href = "css/devices/"+css+".css";
+    document.head.appendChild(ipadCss);
+      
+  }
+}
+
 
 function doWindowNavigate(event, data) {
   var direction = data.state.direction;
